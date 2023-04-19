@@ -11,7 +11,6 @@ import (
 	"github.com/iancoleman/orderedmap"
 	"github.com/invopop/jsonschema"
 	"github.com/pkg/errors"
-	"github.com/suifengpiao14/jsonschemaline"
 	"github.com/suifengpiao14/tormrepository/pkg"
 	"github.com/suifengpiao14/tormrepository/pkg/ddlparser"
 	"github.com/suifengpiao14/tormrepository/pkg/tpl2entity"
@@ -44,7 +43,7 @@ var (
 type EntityElement struct {
 	StructName string
 	Name       string
-	Variables  []*Variable
+	Variables  []*tpl2entity.Variable
 	FullName   string
 	Type       string
 	OutEntity  *EntityElement // 输出对象
@@ -63,7 +62,7 @@ func GetSamePrefixEntityElements(prefix string, entityElementList []*EntityEleme
 const STRUCT_DEFINE_NANE_FORMAT = "%sEntity"
 
 // SQLEntity 根据数据表ddl和sql tpl 生成 sql tpl 调用的输入、输出实体
-func SQLEntity(sqltplDefineText *TPLDefineText, tableList []*Table) (entityStruct string, err error) {
+func SQLEntity(sqltplDefineText *tpl2entity.TPLDefineText, tableList []*ddlparser.Table) (entityStruct string, err error) {
 	entityElement, err := SQLEntityElement(sqltplDefineText, tableList)
 	if err != nil {
 		return "", err
@@ -148,73 +147,73 @@ func ColumnsToVariables(tableList []*ddlparser.Table) (variables tpl2entity.Vari
 	return
 }
 
-func SqlTplDefineVariable2lineschema(id string, variables []*Variable, direction string) (lineschema string, err error) {
-	arr := make([]string, 0)
-	if direction == jsonschemaline.LINE_SCHEMA_DIRECTION_IN {
-		arr = append(arr, fmt.Sprintf("version=http://json-schema.org/draft-07/schema,id=input,direction=%s", direction))
-	} else if direction == jsonschemaline.LINE_SCHEMA_DIRECTION_OUT {
-		arr = append(arr, fmt.Sprintf("version=http://json-schema.org/draft-07/schema,id=output,direction=%s", direction))
-	}
-	for _, v := range variables {
-		if v.FieldName == "" { // 过滤匿名字段
-			continue
-		}
-		kvArr := make([]string, 0)
+// func SqlTplDefineVariable2lineschema(id string, variables []*tpl2entity.Variable, direction string) (lineschema string, err error) {
+// 	arr := make([]string, 0)
+// 	if direction == jsonschemaline.LINE_SCHEMA_DIRECTION_IN {
+// 		arr = append(arr, fmt.Sprintf("version=http://json-schema.org/draft-07/schema,id=input,direction=%s", direction))
+// 	} else if direction == jsonschemaline.LINE_SCHEMA_DIRECTION_OUT {
+// 		arr = append(arr, fmt.Sprintf("version=http://json-schema.org/draft-07/schema,id=output,direction=%s", direction))
+// 	}
+// 	for _, v := range variables {
+// 		if v.FieldName == "" { // 过滤匿名字段
+// 			continue
+// 		}
+// 		kvArr := make([]string, 0)
 
-		kvArr = append(kvArr, fmt.Sprintf("fullname=%s", v.FieldName))
-		dst := ""
-		src := ""
-		format := v.Validate.Format
-		if direction == jsonschemaline.LINE_SCHEMA_DIRECTION_IN {
-			dst = v.Name //此处使用驼峰,v.FieldName 被改成蛇型了
-		} else if direction == jsonschemaline.LINE_SCHEMA_DIRECTION_OUT {
-			src = v.Validate.DataPathSrc
-		}
+// 		kvArr = append(kvArr, fmt.Sprintf("fullname=%s", v.FieldName))
+// 		dst := ""
+// 		src := ""
+// 		format := v.Validate.Format
+// 		if direction == jsonschemaline.LINE_SCHEMA_DIRECTION_IN {
+// 			dst = v.Name //此处使用驼峰,v.FieldName 被改成蛇型了
+// 		} else if direction == jsonschemaline.LINE_SCHEMA_DIRECTION_OUT {
+// 			src = v.Validate.DataPathSrc
+// 		}
 
-		if dst != "" {
-			kvArr = append(kvArr, fmt.Sprintf("dst=%s", dst))
-		}
-		if src != "" {
-			kvArr = append(kvArr, fmt.Sprintf("src=%s", src))
-		}
-		if format != "" {
-			kvArr = append(kvArr, fmt.Sprintf("format=%s", format))
-		}
-		kvArr = append(kvArr, "required")
+// 		if dst != "" {
+// 			kvArr = append(kvArr, fmt.Sprintf("dst=%s", dst))
+// 		}
+// 		if src != "" {
+// 			kvArr = append(kvArr, fmt.Sprintf("src=%s", src))
+// 		}
+// 		if format != "" {
+// 			kvArr = append(kvArr, fmt.Sprintf("format=%s", format))
+// 		}
+// 		kvArr = append(kvArr, "required")
 
-		line := strings.Join(kvArr, ",")
-		arr = append(arr, line)
-	}
-	lineschema = strings.Join(arr, "\n")
-	return lineschema, err
-}
+// 		line := strings.Join(kvArr, ",")
+// 		arr = append(arr, line)
+// 	}
+// 	lineschema = strings.Join(arr, "\n")
+// 	return lineschema, err
+// }
 
-func SqlTplDefineVariable2Jsonschema(id string, variables []*Variable) (jsonschemaOut string, err error) {
-	properties := orderedmap.New()
-	//{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","properties":{},"required":[]}
-	schema := jsonschema.Schema{
-		Version:    "http://json-schema.org/draft-07/schema#",
-		Type:       "object",
-		ID:         jsonschema.ID(id),
-		Properties: properties,
-	}
-	names := make([]string, 0)
-	for _, v := range variables {
-		if v.FieldName == "" { // 过滤匿名字段
-			continue
-		}
+// func SqlTplDefineVariable2Jsonschema(id string, variables []*tpl2entity.Variable) (jsonschemaOut string, err error) {
+// 	properties := orderedmap.New()
+// 	//{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","properties":{},"required":[]}
+// 	schema := jsonschema.Schema{
+// 		Version:    "http://json-schema.org/draft-07/schema#",
+// 		Type:       "object",
+// 		ID:         jsonschema.ID(id),
+// 		Properties: properties,
+// 	}
+// 	names := make([]string, 0)
+// 	for _, v := range variables {
+// 		if v.FieldName == "" { // 过滤匿名字段
+// 			continue
+// 		}
 
-		name := v.FieldName
-		subSchema := v.Validate
-		subSchema.TypeValue = v.Type
-		properties.Set(name, subSchema)
-		names = append(names, name)
-	}
-	schema.Required = names
-	b, err := schema.MarshalJSON()
-	jsonschemaOut = string(b)
-	return jsonschemaOut, err
-}
+// 		name := v.FieldName
+// 		subSchema := v.Validate
+// 		subSchema.TypeValue = v.Type
+// 		properties.Set(name, subSchema)
+// 		names = append(names, name)
+// 	}
+// 	schema.Required = names
+// 	b, err := schema.MarshalJSON()
+// 	jsonschemaOut = string(b)
+// 	return jsonschemaOut, err
+// }
 
 func ParseSQLTPLTableName(sqlTpl string) (tableList []string, err error) {
 
@@ -256,7 +255,7 @@ func regexpMatch(s string, delim string) (matcheList []string, err error) {
 type SQLTplNamespace struct {
 	Namespace string
 	Table     *ddlparser.Table
-	Defines   TPLDefineTextList
+	Defines   tpl2entity.TPLDefineTextList
 }
 
 func (s *SQLTplNamespace) String() string { // 这个将第一次模板解析输出的内容，合并成字符串，然后解析出{{define "xxx"}}{{end}}模板
