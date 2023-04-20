@@ -25,7 +25,7 @@ func (v ModelDTOs) Less(i, j int) bool { // 重写 Less() 方法， 从小到大
 }
 
 //GenerateModel 生成 model 文件内容
-func GenerateModel(tableList []*ddlparser.Table) (modelDTOs ModelDTOs, err error) {
+func GenerateModel(tables []*ddlparser.Table) (modelDTOs ModelDTOs, err error) {
 	modelDTOs = make([]*ModelDTO, 0)
 	tableTpl := modelTemplate()
 	tl, err := template.New("").Parse(tableTpl)
@@ -33,9 +33,9 @@ func GenerateModel(tableList []*ddlparser.Table) (modelDTOs ModelDTOs, err error
 		return
 	}
 
-	for i := 0; i < len(tableList); i++ {
+	for i := 0; i < len(tables); i++ {
 		buf := new(bytes.Buffer)
-		table := tableList[i]
+		table := tables[i]
 		err = tl.Execute(buf, table)
 		if err != nil {
 			return

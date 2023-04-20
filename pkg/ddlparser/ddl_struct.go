@@ -12,10 +12,10 @@ import (
 )
 
 type DatabaseConfig struct {
-	DatabaseName    string `mapstructure:"databaseName"`
-	TablePrefix     string `mapstructure:"tablePrefix"`
-	ColumnPrefix    string `mapstructure:"columnPrefix"`
-	DeletedAtColumn string `mapstructure:"deletedAtColumn"`
+	DatabaseName    string `mapstructure:"databaseName" json:"databaseName"`
+	TablePrefix     string `mapstructure:"tablePrefix" json:"tablePrefix"`
+	ColumnPrefix    string `mapstructure:"columnPrefix" json:"columnPrefix"`
+	DeletedAtColumn string `mapstructure:"deletedAtColumn" json:"deletedAtColumn"`
 }
 
 // map for converting mysql type to golang types

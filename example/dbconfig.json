@@ -1,0 +1,6 @@
+{
+    "databaseName": "test",
+    "tablePrefix": "t_",
+    "columnPrefix": "",
+    "deletedAtColumn": "deleted_at"
+}

@@ -15,7 +15,7 @@ import (
 	"strings"
 
 	"github.com/iancoleman/strcase"
-	"goa.design/goa/codegen"
+	"goa.design/goa/v3/codegen"
 	"golang.org/x/tools/go/ast/astutil"
 	"golang.org/x/tools/imports"
 )

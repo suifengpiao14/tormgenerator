@@ -57,10 +57,10 @@ type _EntityElement struct {
 const STRUCT_DEFINE_NANE_FORMAT = "%sEntity"
 
 // GenerateSQLEntity 根据数据表ddl和sql tpl 生成 sql tpl 调用的输入、输出实体
-func GenerateSQLEntity(sqltplDefines tpl2entity.TPLDefines, tableList []*ddlparser.Table) (entityDTOs EntityDTOs, err error) {
+func GenerateSQLEntity(torms tpl2entity.TPLDefines, tables []*ddlparser.Table) (entityDTOs EntityDTOs, err error) {
 	entityDTOs = make(EntityDTOs, 0)
-	for _, sqltplDefine := range sqltplDefines {
-		entityElement, err := sqlEntityElement(sqltplDefine, tableList)
+	for _, sqltplDefine := range torms {
+		entityElement, err := sqlEntityElement(sqltplDefine, tables)
 		if err != nil {
 			return nil, err
 		}
@@ -98,20 +98,20 @@ func sqlEntityElement(sqltplDefineText *tpl2entity.TPLDefine, tableList []*ddlpa
 			}
 		}
 	}
-	camelName := sqltplDefineText.FullnameCamel()
+	camelName := sqltplDefineText.NameCamel()
 	outName := fmt.Sprintf("%sOut", camelName)
 	entityElement = &_EntityElement{
 		Name:       camelName,
 		Type:       sqltplDefineText.Type(),
 		StructName: fmt.Sprintf(STRUCT_DEFINE_NANE_FORMAT, camelName),
 		Variables:  variableList,
-		FullName:   sqltplDefineText.Fullname(),
+		FullName:   sqltplDefineText.Name,
 		OutEntity: &_EntityElement{
 			Name:       outName,
 			Type:       sqltplDefineText.Type(),
 			StructName: fmt.Sprintf(STRUCT_DEFINE_NANE_FORMAT, camelName),
 			Variables:  columnVariables,
-			FullName:   fmt.Sprintf("%s%sOut", sqltplDefineText.Namespace, sqltplDefineText.Name),
+			FullName:   fmt.Sprintf("%sOut", sqltplDefineText.Name),
 		},
 	}
 	return entityElement, nil

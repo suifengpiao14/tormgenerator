@@ -38,15 +38,14 @@ var (
 type TPLDefines []*TPLDefine
 
 type TPLDefine struct {
-	Name      string
-	Namespace string
-	Text      string // 模板执行后的输出(gqt  需要使用)
-	Content   string // 不包含 {{define }} 和{{end}}
-	typ       string
+	Name    string
+	Text    string // 模板执行后的输出(gqt  需要使用)
+	Content string // 不包含 {{define }} 和{{end}}
+	typ     string
 }
 
 //ParseDefine 解析模板内Define
-func ParseDefine(tpl string, namespace string) (tplDefines TPLDefines, err error) {
+func ParseDefine(tpl string) (tplDefines TPLDefines, err error) {
 	// 解析文本
 	delim := LeftDelim + "define "
 	delimLen := len(delim)
@@ -75,7 +74,7 @@ func ParseDefine(tpl string, namespace string) (tplDefines TPLDefines, err error
 
 	// 格式化
 	for _, defineText := range defineList {
-		tplDefine, err := NewTPLDefine(defineText, namespace)
+		tplDefine, err := NewTPLDefine(defineText)
 		if err != nil {
 			return nil, err
 		}
@@ -85,10 +84,9 @@ func ParseDefine(tpl string, namespace string) (tplDefines TPLDefines, err error
 	return
 }
 
-func NewTPLDefine(defineText string, namespace string) (tplDefine *TPLDefine, err error) {
+func NewTPLDefine(defineText string) (tplDefine *TPLDefine, err error) {
 	tplDefine = &TPLDefine{
-		Namespace: namespace,
-		Text:      defineText,
+		Text: defineText,
 	}
 	err = tplDefine.parseContent()
 	if err != nil {
@@ -129,13 +127,8 @@ func (d *TPLDefine) GetVairables() (variables Variables) {
 	return variables
 }
 
-func (d *TPLDefine) Fullname() (fullname string) {
-	fullname = fmt.Sprintf("%s.%s", d.Namespace, d.Name)
-	return
-}
-func (d *TPLDefine) FullnameCamel() (fullnameCamel string) {
-	fullname := fmt.Sprintf("%s_%s", strings.ReplaceAll(d.Namespace, ".", "_"), d.Name)
-	fullnameCamel = pkg.ToCamel(fullname)
+func (d *TPLDefine) NameCamel() (nameCamel string) {
+	nameCamel = pkg.ToCamel(d.Name)
 	return
 }
 
@@ -295,16 +288,6 @@ func (d *TPLDefine) ISCURL() (yes bool) {
 func (d *TPLDefine) ISSQL() (yes bool) {
 	typ := d.Type()
 	yes = (typ == TPL_DEFINE_TYPE_SQL_SELECT) || (typ == TPL_DEFINE_TYPE_SQL_UPDATE) || (typ == TPL_DEFINE_TYPE_SQL_INSERT)
-	return
-}
-
-// Tag TPLDefine 标签 namespace 的后缀（curl、sql、ddl、meta）
-func (d *TPLDefine) Tag() (tag string) {
-	lastIndex := strings.Index(d.Namespace, ".")
-	tag = d.Namespace
-	if lastIndex > -1 {
-		tag = d.Namespace[lastIndex+1:]
-	}
 	return
 }
 
