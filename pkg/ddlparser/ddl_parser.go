@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	executor "github.com/bytewatch/ddl-executor"
-	"github.com/suifengpiao14/tormrepository/pkg"
+	"github.com/suifengpiao14/generaterepository/pkg"
 )
 
 //ParseDDLWithConfig 解析sql ddl,并格式化

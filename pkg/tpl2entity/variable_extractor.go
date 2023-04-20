@@ -8,7 +8,7 @@ import (
 	"strings"
 
 	"github.com/pkg/errors"
-	"github.com/suifengpiao14/tormrepository/pkg"
+	"github.com/suifengpiao14/generaterepository/pkg"
 )
 
 const STRUCT_DEFINE_NANE_FORMAT = "%sEntity"

@@ -6,8 +6,8 @@ import (
 	"strings"
 	"text/template"
 
+	"github.com/suifengpiao14/generaterepository/pkg/ddlparser"
 	"github.com/suifengpiao14/gotemplatefunc/templatefunc"
-	"github.com/suifengpiao14/tormrepository/pkg/ddlparser"
 )
 
 var TormTemplatefuncMap = template.FuncMap{

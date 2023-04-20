@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/pkg/errors"
-	"github.com/suifengpiao14/tormrepository/pkg"
+	"github.com/suifengpiao14/generaterepository/pkg"
 
 	executor "github.com/bytewatch/ddl-executor"
 )
