@@ -13,21 +13,38 @@ import (
 type TormMetaMap map[string]string
 type Builder struct {
 	pacakgeName string
-	tormMetaMap TormMetaMap
 	ddl         string
 	dbConfig    ddlparser.DatabaseConfig
-	tormText    string
 }
 
-func NewBuilder(pacakgeName string, ddl string, dbConfig ddlparser.DatabaseConfig, tormMetaMap TormMetaMap, tormText string) (builder *Builder) {
+func NewBuilder(pacakgeName string, ddl string, dbConfig ddlparser.DatabaseConfig) (builder *Builder) {
 	builder = &Builder{
 		pacakgeName: pacakgeName,
 		ddl:         ddl,
 		dbConfig:    dbConfig,
-		tormMetaMap: tormMetaMap,
-		tormText:    tormText,
 	}
 	return
+}
+
+func (b *Builder) GetTables() (tables []*ddlparser.Table, err error) {
+	tables, err = ddlparser.ParseDDL(b.ddl, b.dbConfig)
+	if err != nil {
+		return nil, err
+	}
+	return tables, err
+}
+
+//MakeTormMetaWithAllTable 所有的数据表，共用相同的torm生成
+func (b *Builder) MakeTormMetaWithAllTable(commonTormMeta string) (tormMetaMap *TormMetaMap, err error) {
+	tables, err := ddlparser.ParseDDL(b.ddl, b.dbConfig)
+	if err != nil {
+		return nil, err
+	}
+	tormMetaMap = &TormMetaMap{}
+	for _, table := range tables {
+		(*tormMetaMap)[table.TableNameCamel()] = commonTormMeta
+	}
+	return tormMetaMap, err
 }
 
 func (b *Builder) GenerateModel() (buf *bytes.Buffer, err error) {
@@ -48,14 +65,14 @@ func (b *Builder) GenerateModel() (buf *bytes.Buffer, err error) {
 	return &w, nil
 }
 
-func (b *Builder) GenerateTorm() (buf *bytes.Buffer, err error) {
+func (b *Builder) GenerateTorm(tormMetaMap TormMetaMap) (buf *bytes.Buffer, err error) {
 
 	tables, err := ddlparser.ParseDDL(b.ddl, b.dbConfig)
 	if err != nil {
 		return nil, err
 	}
 	var w bytes.Buffer
-	for tableName, tormMetaTpl := range b.tormMetaMap {
+	for tableName, tormMetaTpl := range tormMetaMap {
 		for _, table := range tables {
 			if strings.ToLower(table.TableNameCamel()) == strings.ToLower(tableName) {
 				subTables := []*ddlparser.Table{
@@ -75,8 +92,8 @@ func (b *Builder) GenerateTorm() (buf *bytes.Buffer, err error) {
 	return &w, nil
 }
 
-func (b *Builder) GenerateSQLEntity() (buf *bytes.Buffer, err error) {
-	torms, err := tpl2entity.ParseDefine(b.tormText)
+func (b *Builder) GenerateSQLEntity(tormText string) (buf *bytes.Buffer, err error) {
+	torms, err := tpl2entity.ParseDefine(tormText)
 	if err != nil {
 		return nil, err
 	}

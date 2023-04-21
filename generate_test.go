@@ -11,10 +11,7 @@ import (
 )
 
 func getBuilder() *Builder {
-	tormMap := TormMetaMap{
-		"server": getTormMetaTpl(),
-	}
-	return NewBuilder("example", getDDL(), *getDBConfig(), tormMap, getTorm())
+	return NewBuilder("example", getDDL(), *getDBConfig())
 }
 
 func readFile(filename string) (contnent string) {
@@ -62,13 +59,16 @@ func TestGenerateModel(t *testing.T) {
 }
 func TestGenerateTorm(t *testing.T) {
 	builder := getBuilder()
-	buf, err := builder.GenerateTorm()
+	tormMap := TormMetaMap{
+		"server": getTormMetaTpl(),
+	}
+	buf, err := builder.GenerateTorm(tormMap)
 	require.NoError(t, err)
 	fmt.Println(buf.String())
 }
 func TestGenerateSQLEntity(t *testing.T) {
 	builder := getBuilder()
-	buf, err := builder.GenerateSQLEntity()
+	buf, err := builder.GenerateSQLEntity(getTorm())
 	require.NoError(t, err)
 	fmt.Println(buf.String())
 }
