@@ -96,34 +96,19 @@ func NewTPLDefine(defineText string) (tplDefine *TPLDefine, err error) {
 	if err != nil {
 		return nil, err
 	}
-
+	tplDefine.Type() // 识别类型
 	return
 
 }
 
 func (d *TPLDefine) GetVairables() (variables Variables) {
 	content := []byte(d.Content)
-	switch d.typ {
+	switch d.Type() {
+	case TPL_DEFINE_TYPE_CURL_REQUEST, TPL_DEFINE_TYPE_CURL_RESPONSE:
+		return parseCurlTplVariable(content, d.typ)
 	case TPL_DEFINE_TYPE_SQL_SELECT, TPL_DEFINE_TYPE_SQL_UPDATE, TPL_DEFINE_TYPE_SQL_INSERT:
 		return parsSqlTplVariable(content)
 	}
-
-	subVariables := parseTplVariable(content)
-	variables = append(variables, subVariables...)
-	byteArr := []byte(content)
-
-	// parse sql variable
-	for {
-		variable, pos := parsePrefixVariable(byteArr, SQL_VARIABLE_DELIM)
-		if variable.Name == "" {
-			break
-		}
-		variable.FieldName = variable.Name
-		variables = append(variables, &variable)
-		pos += len(variable.Name)
-		byteArr = byteArr[pos:]
-	}
-	variables = variables.UniqueItems()
 	return variables
 }
 

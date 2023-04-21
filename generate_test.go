@@ -10,14 +10,27 @@ import (
 	"github.com/suifengpiao14/generaterepository/pkg/ddlparser"
 )
 
-func getDBConfig() (dbcfg *ddlparser.DatabaseConfig) {
-	cfgFile := "./example/dbconfig.json"
-	b, err := os.ReadFile(cfgFile)
+func getBuilder() *Builder {
+	tormMap := TormMetaMap{
+		"server": getTormMetaTpl(),
+	}
+	return NewBuilder("example", getDDL(), *getDBConfig(), tormMap, getTorm())
+}
+
+func readFile(filename string) (contnent string) {
+	b, err := os.ReadFile(filename)
 	if err != nil {
 		panic(err)
 	}
+	contnent = string(b)
+	return contnent
+}
+
+func getDBConfig() (dbcfg *ddlparser.DatabaseConfig) {
+	cfgFile := "./example/dbconfig.json"
+	content := readFile(cfgFile)
 	dbcfg = &ddlparser.DatabaseConfig{}
-	err = json.Unmarshal(b, dbcfg)
+	err := json.Unmarshal([]byte(content), dbcfg)
 	if err != nil {
 		panic(err)
 	}
@@ -26,18 +39,36 @@ func getDBConfig() (dbcfg *ddlparser.DatabaseConfig) {
 
 func getDDL() (ddl string) {
 	ddlsql := "./example/ddl.sql"
-	b, err := os.ReadFile(ddlsql)
-	if err != nil {
-		panic(err)
-	}
-	ddl = string(b)
+	ddl = readFile(ddlsql)
 	return ddl
 }
 
+func getTormMetaTpl() (tormMetaTpl string) {
+	filename := "./example/torm.meta.tpl"
+	content := readFile(filename)
+	return content
+}
+func getTorm() (tormMetaTpl string) {
+	filename := "./example/torm.tpl"
+	content := readFile(filename)
+	return content
+}
+
 func TestGenerateModel(t *testing.T) {
-	ddl := getDDL()
-	dbConfig := getDBConfig()
-	buf, err := GenerateModel(ddl, *dbConfig)
+	builder := getBuilder()
+	buf, err := builder.GenerateModel()
+	require.NoError(t, err)
+	fmt.Println(buf.String())
+}
+func TestGenerateTorm(t *testing.T) {
+	builder := getBuilder()
+	buf, err := builder.GenerateTorm()
+	require.NoError(t, err)
+	fmt.Println(buf.String())
+}
+func TestGenerateSQLEntity(t *testing.T) {
+	builder := getBuilder()
+	buf, err := builder.GenerateSQLEntity()
 	require.NoError(t, err)
 	fmt.Println(buf.String())
 }

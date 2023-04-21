@@ -8,18 +8,8 @@ import (
 	"github.com/suifengpiao14/generaterepository/pkg"
 )
 
-//ParseDDLWithConfig 解析sql ddl,并格式化
-func ParseDDLWithConfig(ddl string, dbCfg DatabaseConfig) (tables []*Table, err error) {
-	tables, err = ParseDDL(ddl)
-	if err != nil {
-		return nil, err
-	}
-	tables = FormatWithConfig(tables, dbCfg)
-	return tables, nil
-}
-
 //ParseDDL 解析sql ddl
-func ParseDDL(ddl string) (tables []*Table, err error) {
+func ParseDDL(ddl string, dbConfig DatabaseConfig) (tables []*Table, err error) {
 	tables = make([]*Table, 0)
 	conf := executor.NewDefaultConfig()
 	inst := executor.NewExecutor(conf)
@@ -43,10 +33,12 @@ func ParseDDL(ddl string) (tables []*Table, err error) {
 		}
 
 		table := &Table{
-			TableName:  tableName,
-			Columns:    make([]*Column, 0),
-			EnumsConst: _Enums{},
-			Comment:    tableDef.Comment,
+			DatabaseConfig: dbConfig,
+			TableName:      tableName,
+			Columns:        make([]*Column, 0),
+			EnumsConst:     _Enums{},
+			Comment:        tableDef.Comment,
+			DeleteColumn:   dbConfig.DeletedAtColumn,
 		}
 		for _, indice := range tableDef.Indices {
 			if indice.Name == "PRIMARY" {
@@ -63,8 +55,15 @@ func ParseDDL(ddl string) (tables []*Table, err error) {
 				table.DeleteColumn = columnDef.Name
 			}
 
+			columnName := columnDef.Name
+			if dbConfig.ColumnPrefix != "" {
+				columnName = strings.TrimPrefix(columnName, dbConfig.ColumnPrefix)
+			}
+
 			columnPt := &Column{
 				ColumnName:    columnDef.Name, // 这个地方记录数据库原始字段，包含前缀
+				Name:          columnName,
+				CamelName:     pkg.ToCamel(columnName),
 				Type:          goType,
 				Comment:       columnDef.Comment,
 				Nullable:      columnDef.Nullable,
@@ -88,29 +87,3 @@ func ParseDDL(ddl string) (tables []*Table, err error) {
 	}
 	return
 }
-
-//FormatWithConfig 用DB配置，将ddl解析出的原始Table对象，格式化
-func FormatWithConfig(tables []*Table, dbConfig DatabaseConfig) (formatedTables []*Table) {
-	formatedTables = make([]*Table, len(tables))
-	for index, table := range tables {
-		table.DatabaseConfig = dbConfig
-		if table.DeleteColumn == "" {
-			table.DeleteColumn = dbConfig.DeletedAtColumn
-		}
-
-		for i, column := range table.Columns {
-			columnName := column.ColumnName
-			if dbConfig.ColumnPrefix != "" {
-				columnName = strings.TrimPrefix(columnName, dbConfig.ColumnPrefix)
-			}
-			jsonName := pkg.ToLowerCamel(columnName)
-			column.Name = columnName
-			column.CamelName = pkg.ToCamel(columnName)
-			column.Tag = fmt.Sprintf("`json:\"%s\" gorm:\"column:%s\"`", jsonName, column.Name)
-			table.Columns[i] = column
-		}
-		formatedTables[index] = table
-	}
-	return formatedTables
-}
-

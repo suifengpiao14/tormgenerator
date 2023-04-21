@@ -189,26 +189,36 @@ func regexpMatch(s string, delim string) (matcheList []string, err error) {
 func formatVariableTypeByTableColumn(variableList tpl2entity.Variables, tableList []*ddlparser.Table) (varaibles tpl2entity.Variables, err error) {
 	varaibles = make(tpl2entity.Variables, 0)
 	tableColumnMap := make(map[string]*ddlparser.Column)
-	columnTypMap := make(map[string]string)
-	columnNameMap := make(map[string]string)
+	checkSpellingMistakes := make(map[string]string)
 	for _, table := range tableList {
 		for _, column := range table.Columns { //todo 多表字段相同，类型不同时，只会取列表中最后一个
 			tableColumnMap[column.CamelName] = column
-			columnTypMap[column.CamelName] = column.Type
 			lname := strings.ToLower(column.CamelName)
-			columnNameMap[lname] = column.CamelName // 后续用于检测模板变量拼写错误
+			checkSpellingMistakes[lname] = column.CamelName // 后续用于检测模板变量拼写错误
 		}
 	}
-	variableList.FormatVariableType(columnTypMap)
 	varaibles = variableList
+	for i, varia := range varaibles {
+		column, ok := tableColumnMap[varia.Name]
+		if !ok {
+			continue
+		}
+		varaibles[i].Type = column.Type
+		varaibles[i].Comment = column.Comment
+	}
+
 	for _, variable := range variableList { // 使用数据库字段定义校正变量类型
 		name := variable.Name
-		lname := strings.ToLower(name)
-		if columnName, ok := columnNameMap[lname]; ok { // 检测模板中大小写拼写错误
-			err = errors.Errorf("spelling mistake: have %s, want %s", name, columnName)
-			return
+		_, ok := tableColumnMap[name]
+		if !ok {
+			lname := strings.ToLower(name)
+			if columnName, ok := checkSpellingMistakes[lname]; name != lname && ok { // 检测模板中大小写拼写错误
+				err = errors.Errorf("spelling mistake: have %s, want %s", name, columnName)
+				return
+			}
 		}
 	}
+
 	sort.Sort(varaibles)
 	return
 }
@@ -217,9 +227,9 @@ func inputEntityTemplate() (tpl string) {
 	tpl = `
 		type {{.StructName}} struct{
 			{{range .Variables }}
-				{{.FieldName}} {{.Type}} {{.Tag}} 
+				{{.FieldName}} {{.Type}} {{.Tag}} //{{.Comment}}
 			{{end}}
-			gqt.TplEmptyEntity
+			templatefunc.VolumeMap
 		}
 
 		func (t *{{.StructName}}) TplName() string{

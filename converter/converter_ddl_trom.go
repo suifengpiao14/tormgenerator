@@ -29,6 +29,9 @@ var TormTemplatefuncMap = template.FuncMap{
 	"tplDel":                    tplDel,
 }
 
+const TORM_META_TPL_LEFT = "[["
+const TORM_META_TPL_RIGHT = "]]"
+
 type TormDTO struct {
 	Name string
 	TPL  string
@@ -37,11 +40,16 @@ type TormDTO struct {
 type TormDTOs []*TormDTO
 
 //GenerateTorm  生成torm文件内容
-func GenerateTorm(tormTpl *template.Template, tableList []*ddlparser.Table) (tormDTOs TormDTOs, err error) {
+func GenerateTorm(tormTplText string, tableList []*ddlparser.Table) (tormDTOs TormDTOs, err error) {
+	tpl := template.New("").Delims(TORM_META_TPL_LEFT, TORM_META_TPL_RIGHT).Funcs(templatefunc.TemplatefuncMapSQL).Funcs(TormTemplatefuncMap)
+	tpl, err = tpl.Parse(tormTplText)
+	if err != nil {
+		return nil, err
+	}
 	tormDTOs = TormDTOs{}
 	for _, table := range tableList {
 		var buf bytes.Buffer
-		err = tormTpl.Execute(&buf, table)
+		err = tpl.Execute(&buf, table)
 		if err != nil {
 			return nil, err
 		}

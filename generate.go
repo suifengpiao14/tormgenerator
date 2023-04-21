@@ -2,16 +2,36 @@ package generaterepository
 
 import (
 	"bytes"
-	"io"
-	"text/template"
+	"fmt"
+	"strings"
 
 	"github.com/suifengpiao14/generaterepository/converter"
 	"github.com/suifengpiao14/generaterepository/pkg/ddlparser"
 	"github.com/suifengpiao14/generaterepository/pkg/tpl2entity"
 )
 
-func GenerateModel(ddl string, dbConfig ddlparser.DatabaseConfig) (buf *bytes.Buffer, err error) {
-	talbes, err := ddlparser.ParseDDL(ddl)
+type TormMetaMap map[string]string
+type Builder struct {
+	pacakgeName string
+	tormMetaMap TormMetaMap
+	ddl         string
+	dbConfig    ddlparser.DatabaseConfig
+	tormText    string
+}
+
+func NewBuilder(pacakgeName string, ddl string, dbConfig ddlparser.DatabaseConfig, tormMetaMap TormMetaMap, tormText string) (builder *Builder) {
+	builder = &Builder{
+		pacakgeName: pacakgeName,
+		ddl:         ddl,
+		dbConfig:    dbConfig,
+		tormMetaMap: tormMetaMap,
+		tormText:    tormText,
+	}
+	return
+}
+
+func (b *Builder) GenerateModel() (buf *bytes.Buffer, err error) {
+	talbes, err := ddlparser.ParseDDL(b.ddl, b.dbConfig)
 	if err != nil {
 		return nil, err
 	}
@@ -20,6 +40,7 @@ func GenerateModel(ddl string, dbConfig ddlparser.DatabaseConfig) (buf *bytes.Bu
 		return nil, err
 	}
 	var w bytes.Buffer
+	b.writePackageLine(&w)
 	for _, model := range modelDTOs {
 		w.WriteString(model.TPL)
 		w.WriteString(converter.EOF)
@@ -27,29 +48,39 @@ func GenerateModel(ddl string, dbConfig ddlparser.DatabaseConfig) (buf *bytes.Bu
 	return &w, nil
 }
 
-func GenerateTorm(tormTpl *template.Template, ddl string, dbConfig ddlparser.DatabaseConfig) (reader io.Reader, err error) {
-	talbes, err := ddlparser.ParseDDLWithConfig(ddl, dbConfig)
-	if err != nil {
-		return nil, err
-	}
-	tormDTOs, err := converter.GenerateTorm(tormTpl, talbes)
+func (b *Builder) GenerateTorm() (buf *bytes.Buffer, err error) {
+
+	tables, err := ddlparser.ParseDDL(b.ddl, b.dbConfig)
 	if err != nil {
 		return nil, err
 	}
 	var w bytes.Buffer
-	for _, torm := range tormDTOs {
-		w.WriteString(torm.TPL)
-		w.WriteString(converter.EOF)
+	for tableName, tormMetaTpl := range b.tormMetaMap {
+		for _, table := range tables {
+			if strings.ToLower(table.TableNameCamel()) == strings.ToLower(tableName) {
+				subTables := []*ddlparser.Table{
+					table,
+				}
+				tormDTOs, err := converter.GenerateTorm(tormMetaTpl, subTables)
+				if err != nil {
+					return nil, err
+				}
+				for _, torm := range tormDTOs {
+					w.WriteString(torm.TPL)
+					w.WriteString(converter.EOF)
+				}
+			}
+		}
 	}
 	return &w, nil
 }
 
-func GenerateSQLEntity(tormText string, ddl string, dbConfig ddlparser.DatabaseConfig) (reader io.Reader, err error) {
-	torms, err := tpl2entity.ParseDefine(tormText)
+func (b *Builder) GenerateSQLEntity() (buf *bytes.Buffer, err error) {
+	torms, err := tpl2entity.ParseDefine(b.tormText)
 	if err != nil {
 		return nil, err
 	}
-	talbes, err := ddlparser.ParseDDLWithConfig(ddl, dbConfig)
+	talbes, err := ddlparser.ParseDDL(b.ddl, b.dbConfig)
 	if err != nil {
 		return nil, err
 	}
@@ -58,10 +89,19 @@ func GenerateSQLEntity(tormText string, ddl string, dbConfig ddlparser.DatabaseC
 		return nil, err
 	}
 	var w bytes.Buffer
+	b.writePackageLine(&w)
+	w.WriteString(`import "github.com/suifengpiao14/gotemplatefunc/templatefunc"`)
+	w.WriteString(converter.EOF)
 	for _, entity := range entityDTO {
 		w.WriteString(entity.TPL)
 		w.WriteString(converter.EOF)
 	}
 	return &w, nil
 
+}
+
+func (b *Builder) writePackageLine(w *bytes.Buffer) {
+	w.WriteString(fmt.Sprintf("package %s", b.pacakgeName))
+	w.WriteString(converter.EOF)
+	w.WriteString(converter.EOF)
 }

@@ -16,6 +16,7 @@ const STRUCT_DEFINE_NANE_FORMAT = "%sEntity"
 type Variable struct {
 	Name       string // 模板中的原始名称
 	FieldName  string // 当变量作为结构体的字段时，字段名称
+	Comment    string
 	Type       string
 	Tag        string
 	AllowEmpty bool
@@ -49,18 +50,6 @@ func (v Variables) UniqueItems() (uniq []*Variable) {
 		uniq = append(uniq, variable)
 	}
 	return
-}
-
-func (v *Variables) FormatVariableType(nameTypeMap map[string]string) {
-	for _, varia := range *v {
-		typ, ok := nameTypeMap[varia.Name]
-		if !ok {
-			typ = variableSuffix2Type(varia.Name)
-		}
-		if typ != "" {
-			varia.Type = typ
-		}
-	}
 }
 
 func parseTplVariable(tplContext []byte) (variableList Variables) {
@@ -97,6 +86,7 @@ func parseTplVariable(tplContext []byte) (variableList Variables) {
 		variable, _ := parsePrefixVariable(item, byte('.'))
 		if variable.Name != "" {
 			variable.FieldName = variable.Name
+
 			variableList = append(variableList, &variable)
 
 		}
@@ -226,9 +216,13 @@ func parsePrefixVariable(item []byte, variableStart byte) (variable Variable, po
 		}
 	}
 	variableName := string(variableNameByte)
+	typ := variableSuffix2Type(variableName)
+	if typ == "" {
+		typ = "string"
+	}
 	variable = Variable{
 		Name:       variableName,
-		Type:       variableSuffix2Type(variableName),
+		Type:       typ,
 		AllowEmpty: true,
 	}
 	return
@@ -310,6 +304,7 @@ func (v VariableSuffixTypes) Less(i, j int) bool { // 重写 Less() 方法， �
 var VariableSuffixTypeList = VariableSuffixTypes{
 	&VariableSuffixType{Suffix: "ListInt", Type: "[]int"},
 	&VariableSuffixType{Suffix: "ListStr", Type: "[]string"},
+	&VariableSuffixType{Suffix: "List", Type: "[]string"},
 	&VariableSuffixType{Suffix: "Str", Type: "string"},
 	&VariableSuffixType{Suffix: "Int", Type: "int"},
 }
@@ -323,5 +318,5 @@ func variableSuffix2Type(variableName string) (typ string) {
 			return // 匹配第一个即返回
 		}
 	}
-	return "interface{}"
+	return ""
 }
