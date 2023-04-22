@@ -8,12 +8,15 @@ import (
 	"github.com/suifengpiao14/generaterepository/pkg"
 )
 
-//ParseDDL 解析sql ddl
+// ParseDDL 解析sql ddl
 func ParseDDL(ddl string, dbConfig DatabaseConfig) (tables []*Table, err error) {
 	tables = make([]*Table, 0)
 	conf := executor.NewDefaultConfig()
 	inst := executor.NewExecutor(conf)
 	databaseName := "test"
+	if dbConfig.DatabaseName != "" {
+		databaseName = dbConfig.DatabaseName
+	}
 	ddl = fmt.Sprintf("create database `%s`;use `%s`;%s", databaseName, databaseName, ddl)
 	err = inst.Exec(ddl)
 	if err != nil {
