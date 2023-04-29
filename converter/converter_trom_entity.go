@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"regexp"
 	"sort"
+	"strconv"
 	"strings"
 	"text/template"
 
@@ -51,6 +52,7 @@ type _EntityElement struct {
 	Variables  []*tpl2entity.Variable
 	FullName   string
 	Type       string
+	Torm       string
 	OutEntity  *_EntityElement // 输出对象
 }
 
@@ -75,7 +77,7 @@ func GenerateSQLEntity(torms tpl2entity.TPLDefines, tables []*ddlparser.Table) (
 		}
 		sqlEntity := buf.String()
 		entityDTOs = append(entityDTOs, &EntityDTO{
-			Name: entityElement.Name,
+			Name: entityElement.StructName,
 			TPL:  sqlEntity,
 		})
 	}
@@ -103,6 +105,7 @@ func sqlEntityElement(sqltplDefineText *tpl2entity.TPLDefine, tableList []*ddlpa
 	entityElement = &_EntityElement{
 		Name:       camelName,
 		Type:       sqltplDefineText.Type(),
+		Torm:       strconv.Quote(sqltplDefineText.Text),
 		StructName: fmt.Sprintf(STRUCT_DEFINE_NANE_FORMAT, camelName),
 		Variables:  variableList,
 		FullName:   sqltplDefineText.Name,
@@ -145,8 +148,8 @@ func ColumnsToVariables(tableList []*ddlparser.Table) (variables tpl2entity.Vari
 			allVariables = append(allVariables, variable)
 		}
 	}
-	sort.Sort(variables)
-	return
+	sort.Sort(allVariables)
+	return allVariables
 }
 
 func ParseSQLTPLTableName(sqlTpl string) (tableList []string, err error) {
@@ -187,7 +190,6 @@ func regexpMatch(s string, delim string) (matcheList []string, err error) {
 }
 
 func formatVariableTypeByTableColumn(variableList tpl2entity.Variables, tableList []*ddlparser.Table) (varaibles tpl2entity.Variables, err error) {
-	varaibles = make(tpl2entity.Variables, 0)
 	tableColumnMap := make(map[string]*ddlparser.Column)
 	checkSpellingMistakes := make(map[string]string)
 	for _, table := range tableList {
@@ -238,6 +240,10 @@ func inputEntityTemplate() (tpl string) {
 
 		func (t *{{.StructName}}) TplType() string{
 			return "{{.Type}}"
+		}
+
+		func (t *{{.StructName}}) Torm() string{
+			return {{.Torm}}
 		}
 	`
 	return

@@ -39,12 +39,12 @@ type TPLDefines []*TPLDefine
 
 type TPLDefine struct {
 	Name    string
-	Text    string // 模板执行后的输出(gqt  需要使用)
+	Text    string // 包含{{define xxx}} {{end}} 的模板块
 	Content string // 不包含 {{define }} 和{{end}}
 	typ     string
 }
 
-//ParseDefine 解析模板内Define
+// ParseDefine 解析模板内Define
 func ParseDefine(tpl string) (tplDefines TPLDefines, err error) {
 	// 解析文本
 	delim := LeftDelim + "define "
@@ -109,6 +109,7 @@ func (d *TPLDefine) GetVairables() (variables Variables) {
 	case TPL_DEFINE_TYPE_SQL_SELECT, TPL_DEFINE_TYPE_SQL_UPDATE, TPL_DEFINE_TYPE_SQL_INSERT:
 		return parsSqlTplVariable(content)
 	}
+	variables = parsSqlTplVariable(content)
 	return variables
 }
 
