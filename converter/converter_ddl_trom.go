@@ -22,6 +22,7 @@ var TormTemplatefuncMap = template.FuncMap{
 	"tplGetByPrimaryKey":        tplGetByPrimaryKey,
 	"tplGetAllByPrimaryKeyList": tplGetAllByPrimaryKeyList,
 	"tplPaginateWhere":          tplPaginateWhere,
+	"tplPaginateOrder":          tplPaginateOrder,
 	"tplPaginateTotal":          tplPaginateTotal,
 	"tplPaginate":               tplPaginate,
 	"tplInsert":                 tplInsert,
@@ -39,7 +40,7 @@ type TormDTO struct {
 
 type TormDTOs []*TormDTO
 
-//GenerateTorm  生成torm文件内容
+// GenerateTorm  生成torm文件内容
 func GenerateTorm(tormTplText string, tableList []*ddlparser.Table) (tormDTOs TormDTOs, err error) {
 	tpl := template.New("").Delims(TORM_META_TPL_LEFT, TORM_META_TPL_RIGHT).Funcs(templatefunc.TemplatefuncMapSQL).Funcs(TormTemplatefuncMap)
 	tpl, err = tpl.Parse(tormTplText)
@@ -90,12 +91,23 @@ func tplGetByPrimaryKey(table *ddlparser.Table) (tpl string, err error) {
 
 func tplPaginateWhereName(tableNameCamel string) string {
 	prefix := tableNameCamel
-
 	return fmt.Sprintf("%sPaginateWhere", prefix)
 }
 
 func tplPaginateWhere(table *ddlparser.Table) (tpl string, err error) {
 	tpl = fmt.Sprintf("{{define \"%s\"}}\n  ", tplPaginateWhereName(table.TableNameCamel()))
+
+	tpl = tpl + "\n{{end}}\n"
+	return
+}
+
+func tplPaginateOrderName(tableNameCamel string) string {
+	prefix := tableNameCamel
+	return fmt.Sprintf("%sPaginateOrder", prefix)
+}
+
+func tplPaginateOrder(table *ddlparser.Table) (tpl string, err error) {
+	tpl = fmt.Sprintf("{{define \"%s\"}}\n  ", tplPaginateOrderName(table.TableNameCamel()))
 
 	tpl = tpl + "\n{{end}}\n"
 	return
@@ -122,7 +134,7 @@ func tplPaginate(table *ddlparser.Table) (tpl string, err error) {
 	}
 	updatedAtColumn := table.UpdatedAtColumn()
 	if updatedAtColumn != nil {
-		tpl = fmt.Sprintf(" %s order by `%s` desc ", tpl, updatedAtColumn.Name)
+		tpl = fmt.Sprintf(" %s {{template \"%s\"}} ", tpl, tplPaginateOrderName(table.TableNameCamel()))
 	}
 	tpl = fmt.Sprintf(" %s limit :Offset,:Limit ", tpl)
 	tpl = tpl + ";\n{{end}}\n"
