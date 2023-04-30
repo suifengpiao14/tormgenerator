@@ -46,6 +46,10 @@ type EntityDTO struct {
 
 type EntityDTOs []*EntityDTO
 
+func (a EntityDTOs) Len() int           { return len(a) }
+func (a EntityDTOs) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+func (a EntityDTOs) Less(i, j int) bool { return a[i].Name < a[j].Name }
+
 type _EntityElement struct {
 	StructName string
 	Name       string
@@ -81,6 +85,7 @@ func GenerateSQLEntity(torms tpl2entity.TPLDefines, tables []*ddlparser.Table) (
 			TPL:  sqlEntity,
 		})
 	}
+	sort.Sort(entityDTOs)
 	return entityDTOs, nil
 }
 
