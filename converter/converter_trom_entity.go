@@ -51,6 +51,7 @@ func (a EntityDTOs) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
 func (a EntityDTOs) Less(i, j int) bool { return a[i].Name < a[j].Name }
 
 type _EntityElement struct {
+	GroupName  string
 	StructName string
 	Name       string
 	Variables  []*tpl2entity.Variable
@@ -105,9 +106,17 @@ func sqlEntityElement(sqltplDefineText *tpl2entity.TPLDefine, tableList []*ddlpa
 			}
 		}
 	}
+	var dbName string
+	for _, table := range tableList {
+		if table.DatabaseConfig.DatabaseName != "" {
+			dbName = table.DatabaseConfig.DatabaseName
+			break
+		}
+	}
 	camelName := sqltplDefineText.NameCamel()
 	outName := fmt.Sprintf("%sOut", camelName)
 	entityElement = &_EntityElement{
+		GroupName:  dbName,
 		Name:       camelName,
 		Type:       sqltplDefineText.Type(),
 		Torm:       strconv.Quote(sqltplDefineText.Text),
@@ -250,6 +259,15 @@ func inputEntityTemplate() (tpl string) {
 		func (t *{{.StructName}}) Torm() string{
 			return {{.Torm}}
 		}
+		func (t *{{.StructName}}) TplGroupName() (TplGroupName string) {
+			return "{{.GroupName}}"
+		}
+		
+		func (t *{{.StructName}}) Exec(ctx context.Context, dst interface{}) (err error) {
+			err = gotemplatefunc.ExecSQLTpl(ctx, t.TplGroupName(), t.TplName(), t, dst)
+			return err
+		}
+		
 	`
 	return
 }

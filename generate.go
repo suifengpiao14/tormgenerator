@@ -140,19 +140,37 @@ func sqlEntityTemplate() (tpl string) {
 	tpl = `
 	package repository
 	import (
-			"github.com/suifengpiao14/gotemplatefunc/templatefunc"
+		   "github.com/suifengpiao14/gotemplatefunc"
+		    "github.com/suifengpiao14/gotemplatefunc/templatedb"
+		    "github.com/suifengpiao14/gotemplatefunc/templatefunc"
 			"text/template"
 			"bytes"
+			"context"
 		)
-		//GetTormTemplate 获取torm 模板 
-		func GetTormTemplate()(tormTemplate *template.Template,err error){
-			torm:=GetTorm()
-			tormTemplate,err= template.New("").Funcs(templatefunc.TemplatefuncMapSQL).Parse(torm)
+
+		func RegisterRepository(dbExecutorGetter templatedb.DBExecutorGetter) (err error) {
+
+			torm := GetTorm()
+			r, err := template.New("").Funcs(templatefunc.TemplatefuncMapSQL).Parse(torm)
 			if err != nil {
-				return nil,err 
+				return err
 			}
-			return tormTemplate,nil
+			gotemplatefunc.RegisterSQLTpl(GetTplGroupName(), r, dbExecutorGetter)
+			return nil
 		}
+
+		func GetTplGroupName()(tplGroupName string){
+			m:=make(map[string]struct{},0)
+			{{- range $entity:=. }}
+			tplGroupName=new({{$entity.Name}}).TplGroupName()
+			m[tplGroupName]=struct{}{}
+			{{- end}}
+			for tplGroupName:=range m{
+				return tplGroupName
+			}
+			return ""
+		}
+
 
 		//获取所有torm
 		func GetTorm()(torm string){
