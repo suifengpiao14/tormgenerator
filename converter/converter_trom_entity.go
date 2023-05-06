@@ -107,10 +107,11 @@ func sqlEntityElement(sqltplDefineText *tpl2entity.TPLDefine, tableList []*ddlpa
 	}
 	camelName := sqltplDefineText.NameCamel()
 	outName := fmt.Sprintf("%sOut", camelName)
+	tormReplacer := strings.NewReplacer(`\r`, "")
 	entityElement = &_EntityElement{
 		Name:       camelName,
 		Type:       sqltplDefineText.Type(),
-		Torm:       strconv.Quote(sqltplDefineText.Text),
+		Torm:       tormReplacer.Replace(strconv.Quote(sqltplDefineText.Text)),
 		StructName: fmt.Sprintf(STRUCT_DEFINE_NANE_FORMAT, camelName),
 		Variables:  variableList,
 		FullName:   sqltplDefineText.Name,
@@ -233,9 +234,9 @@ func formatVariableTypeByTableColumn(variableList tpl2entity.Variables, tableLis
 func inputEntityTemplate() (tpl string) {
 	tpl = `
 		type {{.StructName}} struct{
-			{{range .Variables }}
+			{{range .Variables -}}
 				{{.FieldName}} {{.Type}} {{.Tag}} //{{.Comment}}
-			{{end}}
+			{{end -}}
 			templatefunc.VolumeMap
 		}
 

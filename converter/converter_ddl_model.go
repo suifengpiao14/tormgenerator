@@ -54,16 +54,15 @@ func modelTemplate() string {
 	{{- $enumsConst :=.EnumsConst }}
 	{{if $enumsConst }}
 	const (
-		{{range $enumsConst}}
+		{{range $enumsConst -}}
 			{{.ConstKey}}="{{.ConstValue}}"
 		{{end}}
 		)
 	{{end}}
 	{{$modelName:= print .TableNameCamel "Model"}}
 	type {{$modelName}} struct{
-		{{range .Columns }} 
-		// {{.Comment}}
-		{{.CamelName}} {{.Type}} {{if .Tag}} {{.Tag}} {{end}}
+		{{range .Columns -}} 
+		{{.CamelName}} {{.Type}} {{if .Tag}} {{.Tag}} {{end}} // {{.Comment}}
 		{{end}}
 	}
 	func (t *{{$modelName}}) TableName()string{
