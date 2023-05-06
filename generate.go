@@ -140,10 +140,22 @@ func sqlEntityTemplate() (tpl string) {
 	tpl = `
 	package repository
 	import (
-			"github.com/suifengpiao14/gotemplatefunc/templatefunc"
-			"text/template"
-			"bytes"
+		"bytes"
+		"text/template"
+	
+		"github.com/suifengpiao14/gotemplatefunc"
+		"github.com/suifengpiao14/gotemplatefunc/templatedb"
+		"github.com/suifengpiao14/gotemplatefunc/templatefunc"
 		)
+		//InitRepository 内置默认仓库实现
+		func InitRepository(dbExecutorGetter templatedb.DBExecutorGetter) (err error) {
+			r, err := GetTormTemplate()
+			if err != nil {
+				return err
+			}
+			gotemplatefunc.RegisterSQLTpl(GetTplGroupName(), r, dbExecutorGetter)
+			return nil
+		}		
 		//GetTormTemplate 获取torm 模板 
 		func GetTormTemplate()(tormTemplate *template.Template,err error){
 			torm:=GetTorm()
