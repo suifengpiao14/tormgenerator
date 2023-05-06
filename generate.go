@@ -2,8 +2,8 @@ package generaterepository
 
 import (
 	"bytes"
-	"fmt"
 	"strings"
+	"text/template"
 
 	"github.com/suifengpiao14/generaterepository/converter"
 	"github.com/suifengpiao14/generaterepository/pkg/ddlparser"
@@ -34,7 +34,7 @@ func (b *Builder) GetTables() (tables []*ddlparser.Table, err error) {
 	return tables, err
 }
 
-//MakeTormMetaWithAllTable 所有的数据表，共用相同的torm生成
+// MakeTormMetaWithAllTable 所有的数据表，共用相同的torm生成
 func (b *Builder) MakeTormMetaWithAllTable(commonTormMeta string) (tormMetaMap *TormMetaMap, err error) {
 	tables, err := ddlparser.ParseDDL(b.ddl, b.dbConfig)
 	if err != nil {
@@ -57,10 +57,13 @@ func (b *Builder) GenerateModel() (buf *bytes.Buffer, err error) {
 		return nil, err
 	}
 	var w bytes.Buffer
-	b.writePackageLine(&w)
-	for _, model := range modelDTOs {
-		w.WriteString(model.TPL)
-		w.WriteString(converter.EOF)
+	r, err := template.New("").Parse(modelTemplate())
+	if err != nil {
+		return nil, err
+	}
+	err = r.Execute(&w, modelDTOs)
+	if err != nil {
+		return nil, err
 	}
 	return &w, nil
 }
@@ -74,7 +77,7 @@ func (b *Builder) GenerateTorm(tormMetaMap TormMetaMap) (buf *bytes.Buffer, err 
 	var w bytes.Buffer
 	for tableName, tormMetaTpl := range tormMetaMap {
 		for _, table := range tables {
-			if strings.ToLower(table.TableNameCamel()) == strings.ToLower(tableName) {
+			if strings.EqualFold(table.TableNameCamel(), strings.ToLower(tableName)) {
 				subTables := []*ddlparser.Table{
 					table,
 				}
@@ -105,20 +108,65 @@ func (b *Builder) GenerateSQLEntity(tormText string) (buf *bytes.Buffer, err err
 	if err != nil {
 		return nil, err
 	}
+	tplText := sqlEntityTemplate()
+	r, err := template.New("").Parse(tplText)
+	if err != nil {
+		return nil, err
+	}
 	var w bytes.Buffer
-	b.writePackageLine(&w)
-	w.WriteString(`import "github.com/suifengpiao14/gotemplatefunc/templatefunc"`)
-	w.WriteString(converter.EOF)
-	for _, entity := range entityDTO {
-		w.WriteString(entity.TPL)
-		w.WriteString(converter.EOF)
+	err = r.Execute(&w, entityDTO)
+	if err != nil {
+		return nil, err
 	}
 	return &w, nil
 
 }
 
-func (b *Builder) writePackageLine(w *bytes.Buffer) {
-	w.WriteString(fmt.Sprintf("package %s", b.pacakgeName))
-	w.WriteString(converter.EOF)
-	w.WriteString(converter.EOF)
+func modelTemplate() (tpl string) {
+	tpl = `
+	package repository
+	import (
+			"github.com/suifengpiao14/gotemplatefunc/templatefunc"
+		)
+
+		{{range $model:=. }}
+		{{$model.TPL}}
+		{{end}}
+	`
+	return
+}
+
+func sqlEntityTemplate() (tpl string) {
+	tpl = `
+	package repository
+	import (
+			"github.com/suifengpiao14/gotemplatefunc/templatefunc"
+			"text/template"
+			"bytes"
+		)
+		//GetTormTemplate 获取torm 模板 
+		func GetTormTemplate()(tormTemplate *template.Template,err error){
+			torm:=GetTorm()
+			tormTemplate,err= template.New("").Funcs(templatefunc.TemplatefuncMapSQL).Parse(torm)
+			if err != nil {
+				return nil,err 
+			}
+			return tormTemplate,nil
+		}
+
+		//获取所有torm
+		func GetTorm()(torm string){
+			var w bytes.Buffer
+			{{- range $entity:=. }}
+			w.WriteString(new({{$entity.Name}}).Torm())
+			{{- end}}
+			torm=w.String()
+			return torm
+		}
+
+		{{range $entity:=. }}
+		{{$entity.TPL}}
+		{{end}}
+	`
+	return
 }

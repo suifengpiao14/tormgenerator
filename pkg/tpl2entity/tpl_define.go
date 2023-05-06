@@ -38,13 +38,14 @@ var (
 type TPLDefines []*TPLDefine
 
 type TPLDefine struct {
-	Name    string
-	Text    string // 模板执行后的输出(gqt  需要使用)
-	Content string // 不包含 {{define }} 和{{end}}
-	typ     string
+	Name     string
+	Text     string // 包含{{define xxx}} {{end}} 的模板块
+	Content  string // 不包含 {{define }} 和{{end}}
+	typ      string
+	Priority int // 优先级,多个渠道来源,可分别设置合并优先级
 }
 
-//ParseDefine 解析模板内Define
+// ParseDefine 解析模板内Define
 func ParseDefine(tpl string) (tplDefines TPLDefines, err error) {
 	// 解析文本
 	delim := LeftDelim + "define "
@@ -74,7 +75,7 @@ func ParseDefine(tpl string) (tplDefines TPLDefines, err error) {
 
 	// 格式化
 	for _, defineText := range defineList {
-		tplDefine, err := NewTPLDefine(defineText)
+		tplDefine, err := newTPLDefine(defineText)
 		if err != nil {
 			return nil, err
 		}
@@ -84,7 +85,7 @@ func ParseDefine(tpl string) (tplDefines TPLDefines, err error) {
 	return
 }
 
-func NewTPLDefine(defineText string) (tplDefine *TPLDefine, err error) {
+func newTPLDefine(defineText string) (tplDefine *TPLDefine, err error) {
 	tplDefine = &TPLDefine{
 		Text: defineText,
 	}
@@ -101,6 +102,10 @@ func NewTPLDefine(defineText string) (tplDefine *TPLDefine, err error) {
 
 }
 
+func (d *TPLDefine) SetPriority(priority int) {
+	d.Priority = priority
+}
+
 func (d *TPLDefine) GetVairables() (variables Variables) {
 	content := []byte(d.Content)
 	switch d.Type() {
@@ -109,6 +114,7 @@ func (d *TPLDefine) GetVairables() (variables Variables) {
 	case TPL_DEFINE_TYPE_SQL_SELECT, TPL_DEFINE_TYPE_SQL_UPDATE, TPL_DEFINE_TYPE_SQL_INSERT:
 		return parsSqlTplVariable(content)
 	}
+	variables = parsSqlTplVariable(content)
 	return variables
 }
 
@@ -286,12 +292,20 @@ func (dl TPLDefines) IsDefineNameCamel(variableName string) bool {
 	return false
 }
 
-// 去重，保留第一个出现的值，维持原有顺序
+// 去重，相同名称保留优先级最高的一个，维持原有顺序
 func (dl TPLDefines) UniqueItems() (uniq TPLDefines) {
 	vmap := make(map[string]*TPLDefine)
 	uniq = TPLDefines{}
 	for _, tplDefine := range dl {
-		if _, ok := vmap[tplDefine.Name]; ok {
+		if exists, ok := vmap[tplDefine.Name]; ok {
+			if exists.Priority < tplDefine.Priority {
+				vmap[tplDefine.Name] = tplDefine
+				for i, define := range uniq {
+					if define.Name == tplDefine.Name {
+						uniq[i] = tplDefine
+					}
+				}
+			}
 			continue
 		} else {
 			vmap[tplDefine.Name] = tplDefine
@@ -299,4 +313,25 @@ func (dl TPLDefines) UniqueItems() (uniq TPLDefines) {
 		}
 	}
 	return
+}
+func (dl TPLDefines) String() (torm string) {
+	uniq := dl.UniqueItems()
+	var w bytes.Buffer
+	for _, define := range uniq {
+		w.WriteString(define.Text)
+		w.WriteString(EOF)
+	}
+	w.WriteString(EOF)
+	torm = w.String()
+	return torm
+}
+
+func (dl *TPLDefines) SetPriority(priority int) {
+	for _, define := range *dl {
+		define.SetPriority(priority)
+	}
+}
+
+func (dl *TPLDefines) Append(tplDefines ...*TPLDefine) {
+	*dl = append(*dl, tplDefines...)
 }
