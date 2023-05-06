@@ -51,14 +51,14 @@ func (a EntityDTOs) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
 func (a EntityDTOs) Less(i, j int) bool { return a[i].Name < a[j].Name }
 
 type _EntityElement struct {
-	GroupName  string
-	StructName string
-	Name       string
-	Variables  []*tpl2entity.Variable
-	FullName   string
-	Type       string
-	Torm       string
-	OutEntity  *_EntityElement // 输出对象
+	StructName  string
+	TplIdentity string
+	Name        string
+	Variables   []*tpl2entity.Variable
+	FullName    string
+	Type        string
+	Torm        string
+	OutEntity   *_EntityElement // 输出对象
 }
 
 const STRUCT_DEFINE_NANE_FORMAT = "%sEntity"
@@ -106,23 +106,25 @@ func sqlEntityElement(sqltplDefineText *tpl2entity.TPLDefine, tableList []*ddlpa
 			}
 		}
 	}
-	var dbName string
+	tplIdentity := ""
 	for _, table := range tableList {
 		if table.DatabaseConfig.DatabaseName != "" {
-			dbName = table.DatabaseConfig.DatabaseName
+			tplIdentity = strings.TrimSpace(table.DatabaseConfig.DatabaseName)
 			break
 		}
 	}
+
 	camelName := sqltplDefineText.NameCamel()
 	outName := fmt.Sprintf("%sOut", camelName)
+	tormReplacer := strings.NewReplacer(`\r`, "")
 	entityElement = &_EntityElement{
-		GroupName:  dbName,
-		Name:       camelName,
-		Type:       sqltplDefineText.Type(),
-		Torm:       strconv.Quote(sqltplDefineText.Text),
-		StructName: fmt.Sprintf(STRUCT_DEFINE_NANE_FORMAT, camelName),
-		Variables:  variableList,
-		FullName:   sqltplDefineText.Name,
+		Name:        camelName,
+		TplIdentity: tplIdentity,
+		Type:        sqltplDefineText.Type(),
+		Torm:        tormReplacer.Replace(strconv.Quote(sqltplDefineText.Text)),
+		StructName:  fmt.Sprintf(STRUCT_DEFINE_NANE_FORMAT, camelName),
+		Variables:   variableList,
+		FullName:    sqltplDefineText.Name,
 		OutEntity: &_EntityElement{
 			Name:       outName,
 			Type:       sqltplDefineText.Type(),
@@ -242,9 +244,9 @@ func formatVariableTypeByTableColumn(variableList tpl2entity.Variables, tableLis
 func inputEntityTemplate() (tpl string) {
 	tpl = `
 		type {{.StructName}} struct{
-			{{range .Variables }}
+			{{range .Variables -}}
 				{{.FieldName}} {{.Type}} {{.Tag}} //{{.Comment}}
-			{{end}}
+			{{end -}}
 			templatefunc.VolumeMap
 		}
 
@@ -259,12 +261,12 @@ func inputEntityTemplate() (tpl string) {
 		func (t *{{.StructName}}) Torm() string{
 			return {{.Torm}}
 		}
-		func (t *{{.StructName}}) TplGroupName() (TplGroupName string) {
-			return "{{.GroupName}}"
+
+		func (t *{{.StructName}}) GetTplIdentity() string{
+			return "{{.TplIdentity}}"
 		}
-		
 		func (t *{{.StructName}}) Exec(ctx context.Context, dst interface{}) (err error) {
-			err = gotemplatefunc.ExecSQLTpl(ctx, t.TplGroupName(), t.TplName(), t, dst)
+			err = gotemplatefunc.ExecSQLTpl(ctx, t.GetTplIdentity(), t.TplName(), t, dst)
 			return err
 		}
 		

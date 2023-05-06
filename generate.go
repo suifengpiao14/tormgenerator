@@ -140,37 +140,47 @@ func sqlEntityTemplate() (tpl string) {
 	tpl = `
 	package repository
 	import (
-		   "github.com/suifengpiao14/gotemplatefunc"
-		    "github.com/suifengpiao14/gotemplatefunc/templatedb"
-		    "github.com/suifengpiao14/gotemplatefunc/templatefunc"
-			"text/template"
-			"bytes"
-			"context"
+		"bytes"
+		"context"
+		"text/template"
+		"github.com/suifengpiao14/gotemplatefunc"
+		"github.com/suifengpiao14/gotemplatefunc/templatedb"
+		"github.com/suifengpiao14/gotemplatefunc/templatefunc"
 		)
-
-		func RegisterRepository(dbExecutorGetter templatedb.DBExecutorGetter) (err error) {
-
-			torm := GetTorm()
-			r, err := template.New("").Funcs(templatefunc.TemplatefuncMapSQL).Parse(torm)
+		//InitRepository 内置默认仓库实现
+		func InitRepository(dbExecutorGetter templatedb.DBExecutorGetter) (err error) {
+			r, err := GetTormTemplate()
 			if err != nil {
 				return err
 			}
-			gotemplatefunc.RegisterSQLTpl(GetTplGroupName(), r, dbExecutorGetter)
-			return nil
-		}
-
-		func GetTplGroupName()(tplGroupName string){
-			m:=make(map[string]struct{},0)
-			{{- range $entity:=. }}
-			tplGroupName=new({{$entity.Name}}).TplGroupName()
-			m[tplGroupName]=struct{}{}
-			{{- end}}
-			for tplGroupName:=range m{
-				return tplGroupName
+			tplIdentites:=GetTplIdentities()
+			for _,tplIdentite:=range tplIdentites{
+				gotemplatefunc.RegisterSQLTpl(tplIdentite, r, dbExecutorGetter)
 			}
-			return ""
+			return nil
+		}	
+		//GetTormTemplate 获取torm 模板 
+		func GetTormTemplate()(tormTemplate *template.Template,err error){
+			torm:=GetTorm()
+			tormTemplate,err= template.New("").Funcs(templatefunc.TemplatefuncMapSQL).Parse(torm)
+			if err != nil {
+				return nil,err 
+			}
+			return tormTemplate,nil
 		}
-
+		func GetTplIdentities() (tplIdentities []string) {
+			m := make(map[string]struct{}, 0)
+			tplIdentities = make([]string, 0)
+			tplIdentity := ""
+			{{- range $entity:=. }}
+			tplIdentity = new({{$entity.Name}}).GetTplIdentity()
+			m[tplIdentity] = struct{}{}
+			{{- end}}
+			for tplNamespace := range m {
+				tplIdentities = append(tplIdentities, tplNamespace)
+			}
+			return tplIdentities
+		}
 
 		//获取所有torm
 		func GetTorm()(torm string){
