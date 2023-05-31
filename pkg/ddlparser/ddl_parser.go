@@ -2,6 +2,7 @@ package ddlparser
 
 import (
 	"fmt"
+	"sort"
 	"strings"
 
 	executor "github.com/bytewatch/ddl-executor"
@@ -27,6 +28,7 @@ func ParseDDL(ddl string, dbConfig DatabaseConfig) (tables []*Table, err error) 
 	if err != nil {
 		return
 	}
+	sort.Strings(tableList) // 确保输出顺序稳定
 
 	for i := 0; i < len(tableList); i++ {
 		tableName := tableList[i]
