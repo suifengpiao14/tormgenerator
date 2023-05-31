@@ -58,9 +58,9 @@ func (b *Builder) GenerateModel() (buf *bytes.Buffer, err error) {
 		for _, column := range table.Columns { // 增加json tag
 			switch column.Type {
 			case "int", "float64", "bool":
-				column.Tag = fmt.Sprintf("`json:\"%s,string\"`", pkg.ToLowerCamel(column.CamelName))
+				column.Tag = fmt.Sprintf("`gorm:\"%s\" json:\"%s,string\"`", column.ColumnName, pkg.ToLowerCamel(column.CamelName))
 			default:
-				column.Tag = fmt.Sprintf("`json:\"%s\"`", pkg.ToLowerCamel(column.CamelName))
+				column.Tag = fmt.Sprintf("`gorm:\"%s\" json:\"%s\"`", column.ColumnName, pkg.ToLowerCamel(column.CamelName))
 			}
 		}
 	}
