@@ -2,10 +2,12 @@ package generaterepository
 
 import (
 	"bytes"
+	"fmt"
 	"strings"
 	"text/template"
 
 	"github.com/suifengpiao14/generaterepository/converter"
+	"github.com/suifengpiao14/generaterepository/pkg"
 	"github.com/suifengpiao14/generaterepository/pkg/ddlparser"
 	"github.com/suifengpiao14/generaterepository/pkg/tpl2entity"
 )
@@ -52,10 +54,22 @@ func (b *Builder) GenerateModel() (buf *bytes.Buffer, err error) {
 	if err != nil {
 		return nil, err
 	}
+	for _, table := range talbes {
+		for _, column := range table.Columns { // 增加json tag
+			switch column.Type {
+			case "int", "float64", "bool":
+				column.Tag = fmt.Sprintf("`json:\"%s,string\"`", pkg.ToLowerCamel(column.CamelName))
+			default:
+				column.Tag = fmt.Sprintf("`json:\"%s\"`", pkg.ToLowerCamel(column.CamelName))
+			}
+		}
+	}
+
 	modelDTOs, err := converter.GenerateModel(talbes)
 	if err != nil {
 		return nil, err
 	}
+
 	var w bytes.Buffer
 	r, err := template.New("").Parse(modelTemplate())
 	if err != nil {
