@@ -7,9 +7,9 @@ import (
 	"text/template"
 
 	"github.com/suifengpiao14/generaterepository/converter"
-	"github.com/suifengpiao14/generaterepository/pkg"
 	"github.com/suifengpiao14/generaterepository/pkg/ddlparser"
 	"github.com/suifengpiao14/generaterepository/pkg/tpl2entity"
+	"github.com/suifengpiao14/helpers"
 )
 
 type TormMetaMap map[string]string
@@ -56,7 +56,7 @@ func (b *Builder) GenerateModel() (buf *bytes.Buffer, err error) {
 	}
 	for _, table := range talbes {
 		for _, column := range table.Columns { // 增加json tag
-			column.Tag = fmt.Sprintf("`gorm:\"%s\" json:\"%s\"`", column.ColumnName, pkg.ToLowerCamel(column.CamelName))
+			column.Tag = fmt.Sprintf("`gorm:\"%s\" json:\"%s\"`", column.ColumnName, helpers.ToLowerCamel(column.CamelName))
 		}
 	}
 
