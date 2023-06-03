@@ -8,6 +8,7 @@ import (
 
 	"github.com/suifengpiao14/generaterepository/pkg/ddlparser"
 	"github.com/suifengpiao14/gotemplatefunc/templatefunc"
+	"github.com/suifengpiao14/helpers"
 )
 
 var TormTemplatefuncMap = template.FuncMap{
@@ -15,9 +16,9 @@ var TormTemplatefuncMap = template.FuncMap{
 	"currentTime":   templatefunc.CurrentTime,
 	"permanentTime": templatefunc.PermanentTime,
 	"contains":      strings.Contains,
-	"toCamel":       templatefunc.ToCamel,
-	"toLowerCamel":  templatefunc.ToLowerCamel,
-	"snakeCase":     templatefunc.SnakeCase,
+	"toCamel":       helpers.ToCamel,
+	"toLowerCamel":  helpers.ToLowerCamel,
+	"snakeCase":     helpers.ToSnakeCase,
 
 	"tplGetByPrimaryKey":        tplGetByPrimaryKey,
 	"tplGetAllByPrimaryKeyList": tplGetAllByPrimaryKeyList,

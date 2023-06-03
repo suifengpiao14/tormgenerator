@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"github.com/pkg/errors"
-	"github.com/suifengpiao14/generaterepository/pkg"
+	"github.com/suifengpiao14/helpers"
 )
 
 const (
@@ -50,7 +50,7 @@ func ParseDefine(tpl string) (tplDefines TPLDefines, err error) {
 	// 解析文本
 	delim := LeftDelim + "define "
 	delimLen := len(delim)
-	tpl = pkg.TrimSpaces(tpl) // 去除开头结尾的非有效字符
+	tpl = helpers.TrimSpaces(tpl) // 去除开头结尾的非有效字符
 	defineList := make([]string, 0)
 	for {
 		index := strings.Index(tpl, delim)
@@ -119,7 +119,7 @@ func (d *TPLDefine) GetVairables() (variables Variables) {
 }
 
 func (d *TPLDefine) NameCamel() (nameCamel string) {
-	nameCamel = pkg.ToCamel(d.Name)
+	nameCamel = helpers.ToCamel(d.Name)
 	return
 }
 
@@ -151,7 +151,7 @@ func (d *TPLDefine) parseName() (err error) {
 
 // Content TPLDefine.Out 含有{{define }} ...{{end}} Content 在此基础上 去除 define标记
 func (d *TPLDefine) parseContent() (err error) {
-	content := pkg.TrimSpaces(d.Text) // 去除开头结尾的非有效字符
+	content := helpers.TrimSpaces(d.Text) // 去除开头结尾的非有效字符
 	index := strings.Index(content, RightDelim)
 	if index < 0 {
 		err = errors.Errorf("not found %sdefine \"xxx\" %s in tpl content %s", LeftDelim, RightDelim, content)
@@ -165,7 +165,7 @@ func (d *TPLDefine) parseContent() (err error) {
 		return err
 	}
 	content = content[index+len(RightDelim) : len(content)-len(endTag)]
-	content = pkg.TrimSpaces(content)
+	content = helpers.TrimSpaces(content)
 	d.Content = content
 	return nil
 }
@@ -183,7 +183,7 @@ func (d *TPLDefine) ContentFirstLine(s string) (firstLine string) {
 		}
 		firstLine = s[:firstLineIndex]
 		firstLine = re.ReplaceAllString(firstLine, "") // 删除template 模板变量，防止第一行为模板变量行，如果为模板变量则取下一行
-		firstLine = pkg.TrimSpaces(firstLine)
+		firstLine = helpers.TrimSpaces(firstLine)
 		if firstLine != "" {
 			break
 		}
@@ -285,7 +285,7 @@ func (d *TPLDefine) ISSQL() (yes bool) {
 // 判断一个(变量)名词是否和define 名称相同
 func (dl TPLDefines) IsDefineNameCamel(variableName string) bool {
 	for _, TPLDefine := range dl {
-		if pkg.ToCamel(TPLDefine.Name) == variableName {
+		if helpers.ToCamel(TPLDefine.Name) == variableName {
 			return true
 		}
 	}

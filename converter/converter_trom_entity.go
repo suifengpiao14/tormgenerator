@@ -10,9 +10,9 @@ import (
 	"text/template"
 
 	"github.com/pkg/errors"
-	"github.com/suifengpiao14/generaterepository/pkg"
 	"github.com/suifengpiao14/generaterepository/pkg/ddlparser"
 	"github.com/suifengpiao14/generaterepository/pkg/tpl2entity"
+	"github.com/suifengpiao14/helpers"
 )
 
 const (
@@ -143,7 +143,7 @@ func parseSQLSelectColumn(sql string) []string {
 		return make([]string, 0)
 	}
 	fieldStr := match[0][1]
-	out := strings.Split(pkg.StandardizeSpaces(fieldStr), ",")
+	out := strings.Split(helpers.StandardizeSpaces(fieldStr), ",")
 	return out
 }
 

@@ -8,7 +8,7 @@ import (
 	"strings"
 
 	"github.com/pkg/errors"
-	"github.com/suifengpiao14/generaterepository/pkg"
+	"github.com/suifengpiao14/helpers"
 )
 
 const STRUCT_DEFINE_NANE_FORMAT = "%sEntity"
@@ -23,7 +23,7 @@ type Variable struct {
 }
 
 func (v *Variable) NameCamel() (nameCamel string) {
-	nameCamel = pkg.ToCamel(v.Name)
+	nameCamel = helpers.ToCamel(v.Name)
 	return
 }
 
@@ -95,7 +95,7 @@ func parseTplVariable(tplContext []byte) (variableList Variables) {
 	// parse sub define variable
 	templateNameList := getTemplateNames(string(tplContext))
 	for _, templateName := range templateNameList {
-		templateName = pkg.ToCamel(templateName)
+		templateName = helpers.ToCamel(templateName)
 		variable := Variable{
 			Name:       templateName,
 			AllowEmpty: false,
@@ -162,7 +162,7 @@ func parseSQLSelectColumn(sql string) []string {
 		return make([]string, 0)
 	}
 	fieldStr := match[0][1]
-	out := strings.Split(pkg.StandardizeSpaces(fieldStr), ",")
+	out := strings.Split(helpers.StandardizeSpaces(fieldStr), ",")
 	return out
 }
 

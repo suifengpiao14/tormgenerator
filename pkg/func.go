@@ -15,32 +15,9 @@ import (
 	"strings"
 
 	"github.com/iancoleman/strcase"
-	"goa.design/goa/v3/codegen"
 	"golang.org/x/tools/go/ast/astutil"
 	"golang.org/x/tools/imports"
 )
-
-// TrimSpaces  去除开头结尾的非有效字符
-func TrimSpaces(s string) string {
-	return strings.Trim(s, "\r\n\t\v\f ")
-}
-
-// 封装 goa.design/goa/v3/codegen 方便后续可定制
-func ToCamel(name string) string {
-	return codegen.CamelCase(name, true, true)
-}
-
-func ToLowerCamel(name string) string {
-	return codegen.CamelCase(name, false, true)
-}
-
-func SnakeCase(name string) string {
-	return codegen.SnakeCase(name)
-}
-
-func StandardizeSpaces(s string) string {
-	return strings.Join(strings.Fields(s), " ")
-}
 
 func GeneratePackageName(dstDir string) (packageName string, err error) {
 	if runtime.GOOS == "windows" { // drop driver name
