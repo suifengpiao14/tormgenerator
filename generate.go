@@ -1,4 +1,4 @@
-package torm
+package tormgenerator
 
 import (
 	"bytes"
