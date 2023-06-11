@@ -8,7 +8,7 @@ import (
 
 	"github.com/suifengpiao14/gotemplatefunc/templatefunc"
 	"github.com/suifengpiao14/helpers"
-	"github.com/suifengpiao14/torm/parser/ddlparser"
+	"github.com/suifengpiao14/tormgenerator/parser/ddlparser"
 )
 
 var TormTemplatefuncMap = template.FuncMap{

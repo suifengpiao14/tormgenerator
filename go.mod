@@ -1,4 +1,4 @@
-module github.com/suifengpiao14/torm
+module github.com/suifengpiao14/tormgenerator
 
 go 1.18
 

@@ -9,8 +9,8 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/suifengpiao14/funcs"
-	"github.com/suifengpiao14/torm/parser/ddlparser"
-	"github.com/suifengpiao14/torm/parser/tplparser"
+	"github.com/suifengpiao14/tormgenerator/parser/ddlparser"
+	"github.com/suifengpiao14/tormgenerator/parser/tplparser"
 )
 
 const (

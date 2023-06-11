@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"text/template"
 
-	"github.com/suifengpiao14/torm/parser/ddlparser"
+	"github.com/suifengpiao14/tormgenerator/parser/ddlparser"
 )
 
 type ModelDTO struct {

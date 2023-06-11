@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
-	"github.com/suifengpiao14/torm/parser/ddlparser"
+	"github.com/suifengpiao14/tormgenerator/parser/ddlparser"
 )
 
 func getBuilder() *Builder {

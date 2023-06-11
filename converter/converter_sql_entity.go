@@ -5,9 +5,9 @@ import (
 	"sort"
 	"text/template"
 
-	"github.com/suifengpiao14/torm/parser/ddlparser"
-	"github.com/suifengpiao14/torm/parser/tormparser"
-	"github.com/suifengpiao14/torm/parser/tplparser"
+	"github.com/suifengpiao14/tormgenerator/parser/ddlparser"
+	"github.com/suifengpiao14/tormgenerator/parser/tormparser"
+	"github.com/suifengpiao14/tormgenerator/parser/tplparser"
 )
 
 type EntityDTO struct {

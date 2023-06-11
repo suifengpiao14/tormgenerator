@@ -7,10 +7,10 @@ import (
 	"text/template"
 
 	"github.com/suifengpiao14/funcs"
-	"github.com/suifengpiao14/torm/converter"
-	"github.com/suifengpiao14/torm/parser/ddlparser"
-	"github.com/suifengpiao14/torm/parser/tormparser"
-	"github.com/suifengpiao14/torm/parser/tplparser"
+	"github.com/suifengpiao14/tormgenerator/converter"
+	"github.com/suifengpiao14/tormgenerator/parser/ddlparser"
+	"github.com/suifengpiao14/tormgenerator/parser/tormparser"
+	"github.com/suifengpiao14/tormgenerator/parser/tplparser"
 )
 
 type TormMetaMap map[string]string
