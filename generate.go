@@ -1,4 +1,4 @@
-package generaterepository
+package torm
 
 import (
 	"bytes"
@@ -6,10 +6,11 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/suifengpiao14/generaterepository/converter"
-	"github.com/suifengpiao14/generaterepository/pkg/ddlparser"
-	"github.com/suifengpiao14/generaterepository/pkg/tpl2entity"
-	"github.com/suifengpiao14/helpers"
+	"github.com/suifengpiao14/funcs"
+	"github.com/suifengpiao14/torm/converter"
+	"github.com/suifengpiao14/torm/parser/ddlparser"
+	"github.com/suifengpiao14/torm/parser/tormparser"
+	"github.com/suifengpiao14/torm/parser/tplparser"
 )
 
 type TormMetaMap map[string]string
@@ -56,7 +57,7 @@ func (b *Builder) GenerateModel() (buf *bytes.Buffer, err error) {
 	}
 	for _, table := range talbes {
 		for _, column := range table.Columns { // 增加json tag
-			column.Tag = fmt.Sprintf("`gorm:\"%s\" json:\"%s\"`", column.ColumnName, helpers.ToLowerCamel(column.CamelName))
+			column.Tag = fmt.Sprintf("`gorm:\"%s\" json:\"%s\"`", column.ColumnName, funcs.ToLowerCamel(column.CamelName))
 		}
 	}
 
@@ -77,7 +78,7 @@ func (b *Builder) GenerateModel() (buf *bytes.Buffer, err error) {
 	return &w, nil
 }
 
-func (b *Builder) GenerateTorm(tormMetaMap TormMetaMap) (buf *bytes.Buffer, err error) {
+func (b *Builder) GenerateTormFromMeta(tormMetaMap TormMetaMap) (buf *bytes.Buffer, err error) {
 
 	tables, err := ddlparser.ParseDDL(b.ddl, b.dbConfig)
 	if err != nil {
@@ -90,13 +91,13 @@ func (b *Builder) GenerateTorm(tormMetaMap TormMetaMap) (buf *bytes.Buffer, err 
 				subTables := []*ddlparser.Table{
 					table,
 				}
-				tormDTOs, err := converter.GenerateTorm(tormMetaTpl, subTables)
+				tormDTOs, err := converter.GenerateTormFromDDL(tormMetaTpl, subTables)
 				if err != nil {
 					return nil, err
 				}
 				for _, torm := range tormDTOs {
 					w.WriteString(torm.TPL)
-					w.WriteString(converter.EOF)
+					w.WriteString(tormparser.EOF)
 				}
 			}
 		}
@@ -105,7 +106,7 @@ func (b *Builder) GenerateTorm(tormMetaMap TormMetaMap) (buf *bytes.Buffer, err 
 }
 
 func (b *Builder) GenerateSQLEntity(tormText string) (buf *bytes.Buffer, err error) {
-	torms, err := tpl2entity.ParseDefine(tormText)
+	torms, err := tplparser.ParseDefine(tormText)
 	if err != nil {
 		return nil, err
 	}
@@ -128,7 +129,6 @@ func (b *Builder) GenerateSQLEntity(tormText string) (buf *bytes.Buffer, err err
 		return nil, err
 	}
 	return &w, nil
-
 }
 
 func modelTemplate() (tpl string) {

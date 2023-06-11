@@ -1,4 +1,4 @@
-package generaterepository
+package torm
 
 import (
 	"encoding/json"
@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
-	"github.com/suifengpiao14/generaterepository/pkg/ddlparser"
+	"github.com/suifengpiao14/torm/parser/ddlparser"
 )
 
 func getBuilder() *Builder {
@@ -62,7 +62,7 @@ func TestGenerateTorm(t *testing.T) {
 	tormMap := TormMetaMap{
 		"server": getTormMetaTpl(),
 	}
-	buf, err := builder.GenerateTorm(tormMap)
+	buf, err := builder.GenerateTormFromMeta(tormMap)
 	require.NoError(t, err)
 	fmt.Println(buf.String())
 }

@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"text/template"
 
-	"github.com/suifengpiao14/generaterepository/pkg/ddlparser"
+	"github.com/suifengpiao14/torm/parser/ddlparser"
 )
 
 type ModelDTO struct {
@@ -24,7 +24,7 @@ func (v ModelDTOs) Less(i, j int) bool { // 重写 Less() 方法， 从小到大
 	return v[i].Name < v[j].Name
 }
 
-//GenerateModel 生成 model 文件内容
+// GenerateModel 生成 model 文件内容
 func GenerateModel(tables []*ddlparser.Table) (modelDTOs ModelDTOs, err error) {
 	modelDTOs = make([]*ModelDTO, 0)
 	tableTpl := modelTemplate()

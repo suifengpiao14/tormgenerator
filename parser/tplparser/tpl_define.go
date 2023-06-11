@@ -1,4 +1,4 @@
-package tpl2entity
+package tplparser
 
 import (
 	"bytes"

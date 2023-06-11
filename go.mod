@@ -1,15 +1,14 @@
-module github.com/suifengpiao14/generaterepository
+module github.com/suifengpiao14/torm
 
 go 1.18
 
 require (
 	github.com/bytewatch/ddl-executor v0.0.0-20191006051259-3983fa694bf8
-	github.com/iancoleman/strcase v0.2.0
 	github.com/pkg/errors v0.9.1
 	github.com/stretchr/testify v1.8.1
+	github.com/suifengpiao14/funcs v0.0.3
 	github.com/suifengpiao14/gotemplatefunc v0.0.18
 	github.com/suifengpiao14/helpers v0.0.2
-	golang.org/x/tools v0.8.0
 )
 
 require (
@@ -32,7 +31,6 @@ require (
 	github.com/sirupsen/logrus v1.3.0 // indirect
 	github.com/suifengpiao14/logchan/v2 v2.0.12 // indirect
 	golang.org/x/crypto v0.8.0 // indirect
-	golang.org/x/mod v0.10.0 // indirect
 	golang.org/x/sys v0.7.0 // indirect
 	golang.org/x/term v0.7.0 // indirect
 	golang.org/x/text v0.9.0 // indirect

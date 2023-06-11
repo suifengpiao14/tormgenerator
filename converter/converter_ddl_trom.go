@@ -6,9 +6,9 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/suifengpiao14/generaterepository/pkg/ddlparser"
 	"github.com/suifengpiao14/gotemplatefunc/templatefunc"
 	"github.com/suifengpiao14/helpers"
+	"github.com/suifengpiao14/torm/parser/ddlparser"
 )
 
 var TormTemplatefuncMap = template.FuncMap{
@@ -41,8 +41,8 @@ type TormDTO struct {
 
 type TormDTOs []*TormDTO
 
-// GenerateTorm  生成torm文件内容
-func GenerateTorm(tormTplText string, tableList []*ddlparser.Table) (tormDTOs TormDTOs, err error) {
+// GenerateTormFromDDL  生成torm文件内容
+func GenerateTormFromDDL(tormTplText string, tableList []*ddlparser.Table) (tormDTOs TormDTOs, err error) {
 	tpl := template.New("").Delims(TORM_META_TPL_LEFT, TORM_META_TPL_RIGHT).Funcs(templatefunc.TemplatefuncMapSQL).Funcs(TormTemplatefuncMap)
 	tpl, err = tpl.Parse(tormTplText)
 	if err != nil {

@@ -1,18 +1,16 @@
-package converter
+package tormparser
 
 import (
-	"bytes"
 	"fmt"
 	"regexp"
 	"sort"
 	"strconv"
 	"strings"
-	"text/template"
 
 	"github.com/pkg/errors"
-	"github.com/suifengpiao14/generaterepository/pkg/ddlparser"
-	"github.com/suifengpiao14/generaterepository/pkg/tpl2entity"
-	"github.com/suifengpiao14/helpers"
+	"github.com/suifengpiao14/funcs"
+	"github.com/suifengpiao14/torm/parser/ddlparser"
+	"github.com/suifengpiao14/torm/parser/tplparser"
 )
 
 const (
@@ -39,58 +37,21 @@ var (
 	RightDelim = "}}"
 )
 
-type EntityDTO struct {
-	Name string
-	TPL  string
-}
-
-type EntityDTOs []*EntityDTO
-
-func (a EntityDTOs) Len() int           { return len(a) }
-func (a EntityDTOs) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
-func (a EntityDTOs) Less(i, j int) bool { return a[i].Name < a[j].Name }
-
-type _EntityElement struct {
+type TormStruct struct {
 	StructName  string
 	TplIdentity string
 	Name        string
-	Variables   []*tpl2entity.Variable
+	Variables   []*tplparser.Variable
 	FullName    string
 	Type        string
 	Torm        string
-	OutEntity   *_EntityElement // 输出对象
+	OutEntity   *TormStruct // 输出对象
 }
 
 const STRUCT_DEFINE_NANE_FORMAT = "%sEntity"
 
-// GenerateSQLEntity 根据数据表ddl和sql tpl 生成 sql tpl 调用的输入、输出实体
-func GenerateSQLEntity(torms tpl2entity.TPLDefines, tables []*ddlparser.Table) (entityDTOs EntityDTOs, err error) {
-	entityDTOs = make(EntityDTOs, 0)
-	for _, sqltplDefine := range torms {
-		entityElement, err := sqlEntityElement(sqltplDefine, tables)
-		if err != nil {
-			return nil, err
-		}
-		tp, err := template.New("").Parse(inputEntityTemplate())
-		if err != nil {
-			return nil, err
-		}
-		buf := new(bytes.Buffer)
-		err = tp.Execute(buf, entityElement)
-		if err != nil {
-			return nil, err
-		}
-		sqlEntity := buf.String()
-		entityDTOs = append(entityDTOs, &EntityDTO{
-			Name: entityElement.StructName,
-			TPL:  sqlEntity,
-		})
-	}
-	sort.Sort(entityDTOs)
-	return entityDTOs, nil
-}
-
-func sqlEntityElement(sqltplDefineText *tpl2entity.TPLDefine, tableList []*ddlparser.Table) (entityElement *_EntityElement, err error) {
+// ParserTorm 根据tpl define 和table 提取其中变量,供后续生成go entity 或者 doa 的 template 使用(属于底层函数)
+func ParserTorm(sqltplDefineText *tplparser.TPLDefine, tableList []*ddlparser.Table) (tormStuct *TormStruct, err error) {
 	variableList := sqltplDefineText.GetVairables()
 	variableList, err = formatVariableTypeByTableColumn(variableList, tableList)
 	if err != nil {
@@ -98,7 +59,7 @@ func sqlEntityElement(sqltplDefineText *tpl2entity.TPLDefine, tableList []*ddlpa
 	}
 	columnArr := parseSQLSelectColumn(sqltplDefineText.Text)
 	allColumnVariable := ColumnsToVariables(tableList)
-	columnVariables := make(tpl2entity.Variables, 0)
+	columnVariables := make(tplparser.Variables, 0)
 	for _, columnVariable := range allColumnVariable {
 		for _, columnName := range columnArr {
 			if columnName == columnVariable.Name {
@@ -117,7 +78,7 @@ func sqlEntityElement(sqltplDefineText *tpl2entity.TPLDefine, tableList []*ddlpa
 	camelName := sqltplDefineText.NameCamel()
 	outName := fmt.Sprintf("%sOut", camelName)
 	tormReplacer := strings.NewReplacer(`\r`, "")
-	entityElement = &_EntityElement{
+	tormStuct = &TormStruct{
 		Name:        camelName,
 		TplIdentity: tplIdentity,
 		Type:        sqltplDefineText.Type(),
@@ -125,7 +86,7 @@ func sqlEntityElement(sqltplDefineText *tpl2entity.TPLDefine, tableList []*ddlpa
 		StructName:  fmt.Sprintf(STRUCT_DEFINE_NANE_FORMAT, camelName),
 		Variables:   variableList,
 		FullName:    sqltplDefineText.Name,
-		OutEntity: &_EntityElement{
+		OutEntity: &TormStruct{
 			Name:       outName,
 			Type:       sqltplDefineText.Type(),
 			StructName: fmt.Sprintf(STRUCT_DEFINE_NANE_FORMAT, camelName),
@@ -133,7 +94,7 @@ func sqlEntityElement(sqltplDefineText *tpl2entity.TPLDefine, tableList []*ddlpa
 			FullName:   fmt.Sprintf("%sOut", sqltplDefineText.Name),
 		},
 	}
-	return entityElement, nil
+	return tormStuct, nil
 }
 
 func parseSQLSelectColumn(sql string) []string {
@@ -143,12 +104,12 @@ func parseSQLSelectColumn(sql string) []string {
 		return make([]string, 0)
 	}
 	fieldStr := match[0][1]
-	out := strings.Split(helpers.StandardizeSpaces(fieldStr), ",")
+	out := strings.Split(funcs.StandardizeSpaces(fieldStr), ",")
 	return out
 }
 
-func ColumnsToVariables(tableList []*ddlparser.Table) (variables tpl2entity.Variables) {
-	allVariables := make(tpl2entity.Variables, 0)
+func ColumnsToVariables(tableList []*ddlparser.Table) (variables tplparser.Variables) {
+	allVariables := make(tplparser.Variables, 0)
 	tableColumnMap := make(map[string]*ddlparser.Column)
 	columnNameMap := make(map[string]string)
 	for _, table := range tableList {
@@ -156,7 +117,7 @@ func ColumnsToVariables(tableList []*ddlparser.Table) (variables tpl2entity.Vari
 			tableColumnMap[column.CamelName] = column
 			lname := strings.ToLower(column.CamelName)
 			columnNameMap[lname] = column.CamelName // 后续用于检测模板变量拼写错误
-			variable := &tpl2entity.Variable{
+			variable := &tplparser.Variable{
 				Name:      column.Name,
 				FieldName: column.Name,
 				Type:      column.Type,
@@ -205,7 +166,7 @@ func regexpMatch(s string, delim string) (matcheList []string, err error) {
 	return
 }
 
-func formatVariableTypeByTableColumn(variableList tpl2entity.Variables, tableList []*ddlparser.Table) (varaibles tpl2entity.Variables, err error) {
+func formatVariableTypeByTableColumn(variableList tplparser.Variables, tableList []*ddlparser.Table) (varaibles tplparser.Variables, err error) {
 	tableColumnMap := make(map[string]*ddlparser.Column)
 	checkSpellingMistakes := make(map[string]string)
 	for _, table := range tableList {
@@ -238,38 +199,5 @@ func formatVariableTypeByTableColumn(variableList tpl2entity.Variables, tableLis
 	}
 
 	sort.Sort(varaibles)
-	return
-}
-
-func inputEntityTemplate() (tpl string) {
-	tpl = `
-		type {{.StructName}} struct{
-			{{range .Variables -}}
-				{{.FieldName}} {{.Type}} {{.Tag}} //{{.Comment}}
-			{{end -}}
-			templatefunc.VolumeMap
-		}
-
-		func (t *{{.StructName}}) TplName() string{
-			return "{{.FullName}}"
-		}
-
-		func (t *{{.StructName}}) TplType() string{
-			return "{{.Type}}"
-		}
-
-		func (t *{{.StructName}}) Torm() string{
-			return {{.Torm}}
-		}
-
-		func (t *{{.StructName}}) GetTplIdentity() string{
-			return "{{.TplIdentity}}"
-		}
-		func (t *{{.StructName}}) Exec(ctx context.Context, dst interface{}) (err error) {
-			err = gotemplatefunc.ExecSQLTpl(ctx, t.GetTplIdentity(), t.TplName(), t, dst)
-			return err
-		}
-		
-	`
 	return
 }
