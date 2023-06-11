@@ -191,6 +191,14 @@ func (d *TPLDefine) ContentFirstLine(s string) (firstLine string) {
 	}
 	return
 }
+func (d *TPLDefine) GetTable() (tableName string) {
+	selectTableExp := regexp.MustCompile("(?i)(?:from|update|into)\\W+`?(\\w+)`?\\W+")
+	matches := selectTableExp.FindStringSubmatch(d.Content)
+	if len(matches) > 1 {
+		tableName = matches[1]
+	}
+	return tableName
+}
 
 func (d *TPLDefine) TypeTitle() (title string) {
 	typ := d.Type()

@@ -8,6 +8,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 	"github.com/suifengpiao14/tormgenerator/parser/ddlparser"
+	"github.com/suifengpiao14/tormgenerator/parser/tplparser"
 )
 
 func getBuilder() *Builder {
@@ -69,6 +70,14 @@ func TestGenerateTorm(t *testing.T) {
 func TestGenerateSQLEntity(t *testing.T) {
 	builder := getBuilder()
 	buf, err := builder.GenerateSQLEntity(getTorm())
+	require.NoError(t, err)
+	fmt.Println(buf.String())
+}
+func TestGenerateDoaSQL(t *testing.T) {
+	builder := getBuilder()
+	subTplDefines, err := tplparser.ParseDefine(getTorm())
+	require.NoError(t, err)
+	buf, err := builder.GenerateDoaSQL(subTplDefines)
 	require.NoError(t, err)
 	fmt.Println(buf.String())
 }

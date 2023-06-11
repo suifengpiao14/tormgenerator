@@ -17,6 +17,7 @@ type DatabaseConfig struct {
 	ColumnPrefix    string `mapstructure:"columnPrefix" json:"columnPrefix"`
 	DeletedAtColumn string `mapstructure:"deletedAtColumn" json:"deletedAtColumn"`
 	LogLevel        string `mapstructure:"logLevel" json:"logLevel"`
+	Version         string `mapstructure:"version" json:"version"`
 }
 
 // map for converting mysql type to golang types
