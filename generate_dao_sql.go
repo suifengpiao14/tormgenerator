@@ -34,7 +34,7 @@ func (b *Builder) GenerateDoaSQL(tplDefines tplparser.TPLDefines) (buf *bytes.Bu
 		templatId := generateTemplateId(moduleCamel, tableName, defineName)
 		description := fmt.Sprintf("%s%s%s", moduleCamel, tableName, defineName)
 		description = translateDescription(description, tables)
-		templateInsertSql := fmt.Sprintf(TemplateInsertTpl, templatId, batch, description, sourceId, tplDefine.Content)
+		templateInsertSql := fmt.Sprintf(TemplateInsertTpl, templatId, batch, description, sourceId, tplDefine.Text)
 		w.WriteString(templateInsertSql)
 		w.WriteString(tormparser.EOF)
 	}
