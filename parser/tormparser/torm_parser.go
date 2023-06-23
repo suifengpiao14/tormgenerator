@@ -9,6 +9,7 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/suifengpiao14/funcs"
+	"github.com/suifengpiao14/jsonschemaline"
 	"github.com/suifengpiao14/tormgenerator/parser/ddlparser"
 	"github.com/suifengpiao14/tormgenerator/parser/tplparser"
 )
@@ -41,24 +42,42 @@ type TormStruct struct {
 	StructName  string
 	TplIdentity string
 	Name        string
-	Variables   []*tplparser.Variable
+	Variables   tplparser.Variables
 	FullName    string
 	Type        string
 	Torm        string
 	OutEntity   *TormStruct // 输出对象
 }
 
+// GetLineschema 获取输入输出schema
+func (t TormStruct) GetLineschema() (inschema string, outschema string, err error) {
+	inVariables := t.Variables
+	inschema, err = inVariables.Lineschema(fmt.Sprintf("%sIn", t.Name), jsonschemaline.LINE_SCHEMA_DIRECTION_IN)
+	if err != nil {
+		return "", "", err
+	}
+	var outVariables tplparser.Variables
+	if t.OutEntity != nil {
+		outVariables = t.OutEntity.Variables
+	}
+	outschema, err = outVariables.Lineschema(fmt.Sprintf("%sOut", t.Name), jsonschemaline.LINE_SCHEMA_DIRECTION_OUT)
+	if err != nil {
+		return "", "", err
+	}
+	return inschema, outschema, nil
+}
+
 const STRUCT_DEFINE_NANE_FORMAT = "%sEntity"
 
 // ParserTorm 根据tpl define 和table 提取其中变量,供后续生成go entity 或者 doa 的 template 使用(属于底层函数)
 func ParserTorm(sqltplDefineText *tplparser.TPLDefine, tableList []*ddlparser.Table) (tormStuct *TormStruct, err error) {
-	variableList := sqltplDefineText.GetVairables()
+	variableList := sqltplDefineText.GetVariables()
 	variableList, err = formatVariableTypeByTableColumn(variableList, tableList)
 	if err != nil {
 		return nil, err
 	}
 	columnArr := parseSQLSelectColumn(sqltplDefineText.Text)
-	allColumnVariable := ColumnsToVariables(tableList)
+	allColumnVariable := columnsToVariables(tableList)
 	columnVariables := make(tplparser.Variables, 0)
 	for _, columnVariable := range allColumnVariable {
 		for _, columnName := range columnArr {
@@ -108,7 +127,7 @@ func parseSQLSelectColumn(sql string) []string {
 	return out
 }
 
-func ColumnsToVariables(tableList []*ddlparser.Table) (variables tplparser.Variables) {
+func columnsToVariables(tableList []*ddlparser.Table) (variables tplparser.Variables) {
 	allVariables := make(tplparser.Variables, 0)
 	tableColumnMap := make(map[string]*ddlparser.Column)
 	columnNameMap := make(map[string]string)
@@ -129,7 +148,7 @@ func ColumnsToVariables(tableList []*ddlparser.Table) (variables tplparser.Varia
 	return allVariables
 }
 
-func ParseSQLTPLTableName(sqlTpl string) (tableList []string, err error) {
+func parseSQLTPLTableName(sqlTpl string) (tableList []string, err error) {
 
 	updateDelim := "update `?(\\w+)`?"
 	updateMatchArr, err := regexpMatch(sqlTpl, updateDelim)

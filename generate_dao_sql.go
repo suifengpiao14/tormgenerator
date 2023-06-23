@@ -12,7 +12,7 @@ import (
 )
 
 const SourceInsertTpl = "insert ignore into `source` (`source_id`,`source_type`,`config`) values('%s','%s','%s');"
-const TemplateInsertTpl = "insert ignore into `template` (`template_id`,`type`,`batch`,`description`,`source_id`,`tpl`) values('%s','SQL','%s','%s','%s','%s');"
+const TemplateInsertTpl = "insert ignore into `template` (`template_id`,`type`,`batch`,`description`,`source_id`,`tpl`,`input`,`output`) values('%s','SQL','%s','%s','%s','%s','%s','%s');"
 
 func (b *Builder) GenerateDoaSQL(tplDefines tplparser.TPLDefines) (buf *bytes.Buffer, err error) {
 	batch := b.dbConfig.Version
@@ -31,10 +31,18 @@ func (b *Builder) GenerateDoaSQL(tplDefines tplparser.TPLDefines) (buf *bytes.Bu
 	for _, tplDefine := range tplDefines {
 		defineName := tplDefine.NameCamel()
 		tableName := funcs.ToCamel(tplDefine.GetTable())
+		entityElement, err := tormparser.ParserTorm(tplDefine, tables)
+		if err != nil {
+			return nil, err
+		}
+		inputLenschame, outputLenschame, err := entityElement.GetLineschema()
+		if err != nil {
+			return nil, err
+		}
 		templatId := generateTemplateId(moduleCamel, tableName, defineName)
 		description := fmt.Sprintf("%s%s%s", moduleCamel, tableName, defineName)
 		description = translateDescription(description, tables)
-		templateInsertSql := fmt.Sprintf(TemplateInsertTpl, templatId, batch, description, sourceId, tplDefine.Text)
+		templateInsertSql := fmt.Sprintf(TemplateInsertTpl, templatId, batch, description, sourceId, tplDefine.Text, inputLenschame, outputLenschame)
 		w.WriteString(templateInsertSql)
 		w.WriteString(tormparser.EOF)
 	}
