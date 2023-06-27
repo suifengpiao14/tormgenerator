@@ -8,7 +8,7 @@ import (
 	"strings"
 
 	"github.com/pkg/errors"
-	"github.com/suifengpiao14/helpers"
+	"github.com/suifengpiao14/funcs"
 )
 
 const STRUCT_DEFINE_NANE_FORMAT = "%sEntity"
@@ -23,7 +23,7 @@ type Variable struct {
 }
 
 func (v *Variable) NameCamel() (nameCamel string) {
-	nameCamel = helpers.ToCamel(v.Name)
+	nameCamel = funcs.ToCamel(v.Name)
 	return
 }
 
@@ -95,7 +95,7 @@ func parseTplVariable(tplContext []byte) (variableList Variables) {
 	// parse sub define variable
 	templateNameList := getTemplateNames(string(tplContext))
 	for _, templateName := range templateNameList {
-		templateName = helpers.ToCamel(templateName)
+		templateName = funcs.ToCamel(templateName)
 		variable := Variable{
 			Name:       templateName,
 			AllowEmpty: false,
@@ -162,7 +162,7 @@ func parseSQLSelectColumn(sql string) []string {
 		return make([]string, 0)
 	}
 	fieldStr := match[0][1]
-	out := strings.Split(helpers.StandardizeSpaces(fieldStr), ",")
+	out := strings.Split(funcs.StandardizeSpaces(fieldStr), ",")
 	return out
 }
 
@@ -307,6 +307,7 @@ var VariableSuffixTypeList = VariableSuffixTypes{
 	&VariableSuffixType{Suffix: "List", Type: "[]string"},
 	&VariableSuffixType{Suffix: "Str", Type: "string"},
 	&VariableSuffixType{Suffix: "Int", Type: "int"},
+	&VariableSuffixType{Suffix: "Interface", Type: "interface{}"},
 }
 
 func variableSuffix2Type(variableName string) (typ string) {

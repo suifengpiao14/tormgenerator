@@ -57,7 +57,7 @@ func (b *Builder) GenerateModel() (buf *bytes.Buffer, err error) {
 	}
 	for _, table := range talbes {
 		for _, column := range table.Columns { // 增加json tag
-			column.Tag = fmt.Sprintf("`gorm:\"%s\" json:\"%s\"`", column.ColumnName, funcs.ToLowerCamel(column.CamelName))
+			column.Tag = fmt.Sprintf("`gorm:\"column:%s\" json:\"%s\"`", column.ColumnName, funcs.ToLowerCamel(column.CamelName))
 		}
 	}
 

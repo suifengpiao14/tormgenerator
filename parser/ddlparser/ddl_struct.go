@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/pkg/errors"
-	"github.com/suifengpiao14/helpers"
+	"github.com/suifengpiao14/funcs"
 
 	executor "github.com/bytewatch/ddl-executor"
 )
@@ -186,12 +186,12 @@ type Table struct {
 // CamelName 删除表前缀，转换成 camel 格式
 func (t *Table) TableNameCamel() (camelName string) {
 	name := t.TableNameTrimPrefix()
-	camelName = helpers.ToCamel(name)
+	camelName = funcs.ToCamel(name)
 	return
 }
 func (t *Table) SnakeCase() (snakeName string) {
 	name := t.TableNameTrimPrefix()
-	snakeName = helpers.ToSnakeCase(name)
+	snakeName = funcs.ToSnakeCase(name)
 	return
 }
 func (t *Table) TableNameTrimPrefix() (name string) {
@@ -206,7 +206,7 @@ func (t *Table) PrimaryKeyCamel() (camelName string) {
 	if t.DatabaseConfig.ColumnPrefix != "" {
 		primaryKey = strings.TrimLeft(primaryKey, t.DatabaseConfig.TablePrefix)
 	}
-	camelName = helpers.ToCamel(primaryKey)
+	camelName = funcs.ToCamel(primaryKey)
 	return
 }
 

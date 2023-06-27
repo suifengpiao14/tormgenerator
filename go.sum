@@ -148,10 +148,8 @@ github.com/suifengpiao14/ddl-executor v0.0.0-20220524105604-31a4142e615e h1:FwdM
 github.com/suifengpiao14/ddl-executor v0.0.0-20220524105604-31a4142e615e/go.mod h1:wEXsB9Xw4x8YOgbOJjC/4hFwFplZFBbxP9qRnm1WtzQ=
 github.com/suifengpiao14/funcs v0.0.3 h1:dqfsV3QKvSx3vfwxpwPdfLiA//x7Gd3EJ+wkmlb3pvk=
 github.com/suifengpiao14/funcs v0.0.3/go.mod h1:gujdeedgAeiM+AE3seHJR2RSTwiIzEogNQSyZ9YbHQA=
-github.com/suifengpiao14/gotemplatefunc v0.0.18 h1:Gpke1zM01HdyE4oS5q8Wz6fVp8Obf7aDYdOCKTqxa7A=
-github.com/suifengpiao14/gotemplatefunc v0.0.18/go.mod h1:svA6dzYuVkt1TWnVb4qMkH51tpRcO0F86ZlXiL6FuPA=
-github.com/suifengpiao14/helpers v0.0.2 h1:UZWPjNoU+s2SHGyGNTWn0KP4N8evHbzoTE2f9orEb7w=
-github.com/suifengpiao14/helpers v0.0.2/go.mod h1:Imh7HtKgXA3CXOLv2XQ5zEQMckDadqzu07mypfge1qo=
+github.com/suifengpiao14/gotemplatefunc v0.0.20 h1:atEgBGVr+QblhDyuDE8czKdEeGkUcfrfMHg0oGACXJI=
+github.com/suifengpiao14/gotemplatefunc v0.0.20/go.mod h1:dR92bnR8Yrm8TGtjRAk6Gv9w1bSv2tY3u7H6ys00heM=
 github.com/suifengpiao14/logchan/v2 v2.0.12 h1:bfQY/DMj3EXzMS42DOZbdxKgz+UuoCvThMtnrRciSI8=
 github.com/suifengpiao14/logchan/v2 v2.0.12/go.mod h1:c2DmWbatHcQhLZu1ZiKfMa5B7UFa9APSDqSkTiPBO/4=
 github.com/tiancaiamao/appdash v0.0.0-20181126055449-889f96f722a2/go.mod h1:2PfKggNGDuadAa0LElHrByyrz4JPZ9fFx6Gs7nx7ZZU=

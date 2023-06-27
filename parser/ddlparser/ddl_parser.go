@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	executor "github.com/bytewatch/ddl-executor"
-	"github.com/suifengpiao14/helpers"
+	"github.com/suifengpiao14/funcs"
 )
 
 // ParseDDL 解析sql ddl
@@ -68,7 +68,7 @@ func ParseDDL(ddl string, dbConfig DatabaseConfig) (tables []*Table, err error) 
 			columnPt := &Column{
 				ColumnName:    columnDef.Name, // 这个地方记录数据库原始字段，包含前缀
 				Name:          columnName,
-				CamelName:     helpers.ToCamel(columnName),
+				CamelName:     funcs.ToCamel(columnName),
 				Type:          goType,
 				Comment:       columnDef.Comment,
 				Nullable:      columnDef.Nullable,

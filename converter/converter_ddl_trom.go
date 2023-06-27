@@ -6,8 +6,8 @@ import (
 	"strings"
 	"text/template"
 
+	"github.com/suifengpiao14/funcs"
 	"github.com/suifengpiao14/gotemplatefunc/templatefunc"
-	"github.com/suifengpiao14/helpers"
 	"github.com/suifengpiao14/tormgenerator/parser/ddlparser"
 )
 
@@ -16,9 +16,9 @@ var TormTemplatefuncMap = template.FuncMap{
 	"currentTime":   templatefunc.CurrentTime,
 	"permanentTime": templatefunc.PermanentTime,
 	"contains":      strings.Contains,
-	"toCamel":       helpers.ToCamel,
-	"toLowerCamel":  helpers.ToLowerCamel,
-	"snakeCase":     helpers.ToSnakeCase,
+	"toCamel":       funcs.ToCamel,
+	"toLowerCamel":  funcs.ToLowerCamel,
+	"snakeCase":     funcs.ToSnakeCase,
 
 	"tplGetByPrimaryKey":        tplGetByPrimaryKey,
 	"tplGetAllByPrimaryKeyList": tplGetAllByPrimaryKeyList,
