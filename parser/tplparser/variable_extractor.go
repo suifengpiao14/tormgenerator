@@ -9,6 +9,7 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/suifengpiao14/funcs"
+	"github.com/suifengpiao14/jsonschemaline"
 )
 
 const STRUCT_DEFINE_NANE_FORMAT = "%sEntity"
@@ -50,6 +51,53 @@ func (v Variables) UniqueItems() (uniq []*Variable) {
 		uniq = append(uniq, variable)
 	}
 	return
+}
+
+func (variables Variables) Lineschema(id string, direction string) (lineschema string, err error) {
+	arr := make([]string, 0)
+	if direction == jsonschemaline.LINE_SCHEMA_DIRECTION_IN {
+		arr = append(arr, fmt.Sprintf("version=http://json-schema.org/draft-07/schema,id=input,direction=%s", direction))
+	} else if direction == jsonschemaline.LINE_SCHEMA_DIRECTION_OUT {
+		arr = append(arr, fmt.Sprintf("version=http://json-schema.org/draft-07/schema,id=output,direction=%s", direction))
+	}
+	for _, v := range variables {
+		if v.FieldName == "" { // 过滤匿名字段
+			continue
+		}
+		kvArr := make([]string, 0)
+
+		kvArr = append(kvArr, fmt.Sprintf("fullname=%s", funcs.ToLowerCamel(v.FieldName)))
+		dst := ""
+		src := ""
+		format := v.Type
+		if direction == jsonschemaline.LINE_SCHEMA_DIRECTION_IN {
+			dst = v.Name //此处使用驼峰,v.FieldName 被改成蛇型了
+		} else if direction == jsonschemaline.LINE_SCHEMA_DIRECTION_OUT {
+			src = v.Name
+		}
+
+		if dst != "" {
+			kvArr = append(kvArr, fmt.Sprintf("dst=%s", dst))
+		}
+		if src != "" {
+			kvArr = append(kvArr, fmt.Sprintf("src=%s", src))
+		}
+		if format != "" {
+			kvArr = append(kvArr, fmt.Sprintf("format=%s", format))
+		}
+		kvArr = append(kvArr, "required")
+		if v.AllowEmpty {
+			kvArr = append(kvArr, "allowEmptyValue")
+		}
+		if v.Comment != "" {
+			kvArr = append(kvArr, fmt.Sprintf("description=%s", v.Comment))
+		}
+
+		line := strings.Join(kvArr, ",")
+		arr = append(arr, line)
+	}
+	lineschema = strings.Join(arr, "\n")
+	return lineschema, err
 }
 
 func parseTplVariable(tplContext []byte) (variableList Variables) {

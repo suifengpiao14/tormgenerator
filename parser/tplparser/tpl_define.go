@@ -106,7 +106,7 @@ func (d *TPLDefine) SetPriority(priority int) {
 	d.Priority = priority
 }
 
-func (d *TPLDefine) GetVairables() (variables Variables) {
+func (d *TPLDefine) GetVariables() (variables Variables) {
 	content := []byte(d.Content)
 	switch d.Type() {
 	case TPL_DEFINE_TYPE_CURL_REQUEST, TPL_DEFINE_TYPE_CURL_RESPONSE:
