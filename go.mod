@@ -7,8 +7,8 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/stretchr/testify v1.8.1
 	github.com/suifengpiao14/funcs v0.0.3
-	github.com/suifengpiao14/gotemplatefunc v0.0.20
 	github.com/suifengpiao14/jsonschemaline v0.0.44
+	github.com/suifengpiao14/torm v0.0.11
 )
 
 require (

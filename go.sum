@@ -158,14 +158,14 @@ github.com/suifengpiao14/funcs v0.0.3 h1:dqfsV3QKvSx3vfwxpwPdfLiA//x7Gd3EJ+wkmlb
 github.com/suifengpiao14/funcs v0.0.3/go.mod h1:gujdeedgAeiM+AE3seHJR2RSTwiIzEogNQSyZ9YbHQA=
 github.com/suifengpiao14/gjsonmodifier v0.1.9 h1:U5d1fe90UpxJQmzzZlS7kG/P4sAF3fZUmYZvC1VU2QY=
 github.com/suifengpiao14/gjsonmodifier v0.1.9/go.mod h1:bwhORc92wKB1Ms1REvG5IGgBLLEjhOt/hu/XmtQWuKw=
-github.com/suifengpiao14/gotemplatefunc v0.0.20 h1:atEgBGVr+QblhDyuDE8czKdEeGkUcfrfMHg0oGACXJI=
-github.com/suifengpiao14/gotemplatefunc v0.0.20/go.mod h1:dR92bnR8Yrm8TGtjRAk6Gv9w1bSv2tY3u7H6ys00heM=
 github.com/suifengpiao14/jsonschemaline v0.0.44 h1:7A1l8uuNN1poFI8WJdM/L8bNzRuwpS5ieO6H+2xZ2fw=
 github.com/suifengpiao14/jsonschemaline v0.0.44/go.mod h1:J/pR9XNvPZhDuNxTh6RdKWydyskN+DTeLH/d3gCQLkU=
 github.com/suifengpiao14/kvstruct v0.0.14 h1:c5Eb6AsBN0gTVGk/Vj05aEiJ79j+pNNo3aIBw09EuMo=
 github.com/suifengpiao14/kvstruct v0.0.14/go.mod h1:v3hf2KPrafdYJJ49M5RWLfpYS8Z2fsJO/rAGMnIBYn8=
 github.com/suifengpiao14/logchan/v2 v2.0.12 h1:bfQY/DMj3EXzMS42DOZbdxKgz+UuoCvThMtnrRciSI8=
 github.com/suifengpiao14/logchan/v2 v2.0.12/go.mod h1:c2DmWbatHcQhLZu1ZiKfMa5B7UFa9APSDqSkTiPBO/4=
+github.com/suifengpiao14/torm v0.0.11 h1:ZbpQu81MEIaAkEncM5GkIe/hpr02Ng1aaBzVc/tcZYg=
+github.com/suifengpiao14/torm v0.0.11/go.mod h1:rfdPJqqIAq62z8axHDKjHbBM0uL44i/OplFwtF/1s1A=
 github.com/tiancaiamao/appdash v0.0.0-20181126055449-889f96f722a2/go.mod h1:2PfKggNGDuadAa0LElHrByyrz4JPZ9fFx6Gs7nx7ZZU=
 github.com/tidwall/gjson v1.14.2/go.mod h1:/wbyibRr2FHMks5tjHJ5F8dMZh3AcwJEMf5vlfC0lxk=
 github.com/tidwall/gjson v1.14.4 h1:uo0p8EbA09J7RQaflQ1aBRffTR7xedD2bcIVSYxLnkM=

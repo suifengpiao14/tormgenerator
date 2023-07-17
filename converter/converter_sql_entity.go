@@ -67,7 +67,7 @@ func inputEntityTemplate() (tpl string) {
 			{{range .Variables -}}
 				{{.FieldName}} {{.Type}} {{.Tag}} //{{.Comment}}
 			{{end -}}
-			templatefunc.VolumeMap
+			tormfunc.VolumeMap
 		}
 
 		func (t *{{.StructName}}) TplName() string{
@@ -86,7 +86,7 @@ func inputEntityTemplate() (tpl string) {
 			return "{{.TplIdentity}}"
 		}
 		func (t *{{.StructName}}) Exec(ctx context.Context, dst interface{}) (err error) {
-			err = gotemplatefunc.ExecSQLTpl(ctx, t.GetTplIdentity(), t.TplName(), t, dst)
+			err = gotormfunc.ExecSQLTpl(ctx, t.GetTplIdentity(), t.TplName(), t, dst)
 			return err
 		}
 		
