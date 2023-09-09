@@ -162,8 +162,8 @@ github.com/suifengpiao14/jsonschemaline v0.0.44 h1:7A1l8uuNN1poFI8WJdM/L8bNzRuwp
 github.com/suifengpiao14/jsonschemaline v0.0.44/go.mod h1:J/pR9XNvPZhDuNxTh6RdKWydyskN+DTeLH/d3gCQLkU=
 github.com/suifengpiao14/kvstruct v0.0.14 h1:c5Eb6AsBN0gTVGk/Vj05aEiJ79j+pNNo3aIBw09EuMo=
 github.com/suifengpiao14/kvstruct v0.0.14/go.mod h1:v3hf2KPrafdYJJ49M5RWLfpYS8Z2fsJO/rAGMnIBYn8=
-github.com/suifengpiao14/logchan/v2 v2.0.13 h1:XAsOUTMh6QauVEnb26U+9OkmkmHgk8HlMZINIE2z02Y=
-github.com/suifengpiao14/logchan/v2 v2.0.13/go.mod h1:c2DmWbatHcQhLZu1ZiKfMa5B7UFa9APSDqSkTiPBO/4=
+github.com/suifengpiao14/logchan/v2 v2.0.14 h1:w4Zt1rodF2vcd9E8S0jdldqXEn1v9Gn9YN8KwOOPzLs=
+github.com/suifengpiao14/logchan/v2 v2.0.14/go.mod h1:c2DmWbatHcQhLZu1ZiKfMa5B7UFa9APSDqSkTiPBO/4=
 github.com/suifengpiao14/torm v0.0.12 h1:R7HILER0BDKYI0IbUXjY9OjW5tnEl+YMzAqOhKs1CnY=
 github.com/suifengpiao14/torm v0.0.12/go.mod h1:o+mqoG6W6LBmv0KzuAxNsNpezZgcRxk3E4YX4y1U7/E=
 github.com/tiancaiamao/appdash v0.0.0-20181126055449-889f96f722a2/go.mod h1:2PfKggNGDuadAa0LElHrByyrz4JPZ9fFx6Gs7nx7ZZU=

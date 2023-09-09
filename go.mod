@@ -33,7 +33,7 @@ require (
 	github.com/spf13/cast v1.5.1 // indirect
 	github.com/suifengpiao14/gjsonmodifier v0.1.9 // indirect
 	github.com/suifengpiao14/kvstruct v0.0.14 // indirect
-	github.com/suifengpiao14/logchan/v2 v2.0.13 // indirect
+	github.com/suifengpiao14/logchan/v2 v2.0.14 // indirect
 	github.com/tidwall/gjson v1.14.4 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.1 // indirect
