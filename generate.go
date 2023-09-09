@@ -153,11 +153,11 @@ func sqlEntityTemplate() (tpl string) {
 		"context"
 		"text/template"
 		"github.com/suifengpiao14/torm"
-		"github.com/suifengpiao14/torm/templatedb"
+		"github.com/suifengpiao14/torm/tormdb"
 		"github.com/suifengpiao14/torm/tormfunc"
 		)
 		//InitRepository 内置默认仓库实现
-		func InitRepository(dbExecutorGetter templatedb.DBExecutorGetter) (err error) {
+		func InitRepository(dbExecutorGetter tormdb.DBExecutorGetter) (err error) {
 			r, err := GetTormTemplate()
 			if err != nil {
 				return err
@@ -171,7 +171,7 @@ func sqlEntityTemplate() (tpl string) {
 		//GetTormTemplate 获取torm 模板 
 		func GetTormTemplate()(tormTemplate *template.Template,err error){
 			torm:=GetTorm()
-			tormTemplate,err= template.New("").Funcs(tormfunc.tormfuncMapSQL).Parse(torm)
+			tormTemplate,err= template.New("").Funcs(tormfunc.TormfuncMapSQL).Parse(torm)
 			if err != nil {
 				return nil,err 
 			}
