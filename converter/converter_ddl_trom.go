@@ -7,14 +7,14 @@ import (
 	"text/template"
 
 	"github.com/suifengpiao14/funcs"
-	"github.com/suifengpiao14/gotemplatefunc/templatefunc"
+	"github.com/suifengpiao14/torm/tormfunc"
 	"github.com/suifengpiao14/tormgenerator/parser/ddlparser"
 )
 
-var TormTemplatefuncMap = template.FuncMap{
-	"zeroTime":      templatefunc.ZeroTime,
-	"currentTime":   templatefunc.CurrentTime,
-	"permanentTime": templatefunc.PermanentTime,
+var TormtormfuncMap = template.FuncMap{
+	"zeroTime":      tormfunc.ZeroTime,
+	"currentTime":   tormfunc.CurrentTime,
+	"permanentTime": tormfunc.PermanentTime,
 	"contains":      strings.Contains,
 	"toCamel":       funcs.ToCamel,
 	"toLowerCamel":  funcs.ToLowerCamel,
@@ -43,7 +43,7 @@ type TormDTOs []*TormDTO
 
 // GenerateTormFromDDL  生成torm文件内容
 func GenerateTormFromDDL(tormTplText string, tableList []*ddlparser.Table) (tormDTOs TormDTOs, err error) {
-	tpl := template.New("").Delims(TORM_META_TPL_LEFT, TORM_META_TPL_RIGHT).Funcs(templatefunc.TemplatefuncMapSQL).Funcs(TormTemplatefuncMap)
+	tpl := template.New("").Delims(TORM_META_TPL_LEFT, TORM_META_TPL_RIGHT).Funcs(tormfunc.TormfuncMapSQL).Funcs(TormtormfuncMap)
 	tpl, err = tpl.Parse(tormTplText)
 	if err != nil {
 		return nil, err

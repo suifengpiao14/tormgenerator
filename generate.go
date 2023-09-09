@@ -135,7 +135,7 @@ func modelTemplate() (tpl string) {
 	tpl = `
 	package repository
 	import (
-			"github.com/suifengpiao14/gotemplatefunc/templatefunc"
+			"github.com/suifengpiao14/torm/tormfunc"
 		)
 
 		{{range $model:=. }}
@@ -152,9 +152,9 @@ func sqlEntityTemplate() (tpl string) {
 		"bytes"
 		"context"
 		"text/template"
-		"github.com/suifengpiao14/gotemplatefunc"
-		"github.com/suifengpiao14/gotemplatefunc/templatedb"
-		"github.com/suifengpiao14/gotemplatefunc/templatefunc"
+		"github.com/suifengpiao14/torm"
+		"github.com/suifengpiao14/torm/templatedb"
+		"github.com/suifengpiao14/torm/tormfunc"
 		)
 		//InitRepository 内置默认仓库实现
 		func InitRepository(dbExecutorGetter templatedb.DBExecutorGetter) (err error) {
@@ -164,14 +164,14 @@ func sqlEntityTemplate() (tpl string) {
 			}
 			tplIdentites:=GetTplIdentities()
 			for _,tplIdentite:=range tplIdentites{
-				gotemplatefunc.RegisterSQLTpl(tplIdentite, r, dbExecutorGetter)
+				torm.RegisterSQLTpl(tplIdentite, r, dbExecutorGetter)
 			}
 			return nil
 		}	
 		//GetTormTemplate 获取torm 模板 
 		func GetTormTemplate()(tormTemplate *template.Template,err error){
 			torm:=GetTorm()
-			tormTemplate,err= template.New("").Funcs(templatefunc.TemplatefuncMapSQL).Parse(torm)
+			tormTemplate,err= template.New("").Funcs(tormfunc.tormfuncMapSQL).Parse(torm)
 			if err != nil {
 				return nil,err 
 			}

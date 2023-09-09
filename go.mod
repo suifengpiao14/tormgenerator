@@ -7,9 +7,10 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/stretchr/testify v1.8.1
 	github.com/suifengpiao14/funcs v0.0.3
-	github.com/suifengpiao14/gotemplatefunc v0.0.20
 	github.com/suifengpiao14/jsonschemaline v0.0.44
 )
+
+require github.com/suifengpiao14/torm v0.0.12
 
 require (
 	github.com/StackExchange/wmi v0.0.0-20180725035823-b12b22c5341f // indirect
@@ -32,7 +33,7 @@ require (
 	github.com/spf13/cast v1.5.1 // indirect
 	github.com/suifengpiao14/gjsonmodifier v0.1.9 // indirect
 	github.com/suifengpiao14/kvstruct v0.0.14 // indirect
-	github.com/suifengpiao14/logchan/v2 v2.0.12 // indirect
+	github.com/suifengpiao14/logchan/v2 v2.0.13 // indirect
 	github.com/tidwall/gjson v1.14.4 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.1 // indirect
