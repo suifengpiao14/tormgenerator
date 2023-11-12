@@ -86,8 +86,23 @@ func inputEntityTemplate() (tpl string) {
 			return "{{.TplIdentity}}"
 		}
 		func (t *{{.StructName}}) Exec(ctx context.Context, dst interface{}) (err error) {
-			err = torm.ExecSQLTpl(ctx, t.GetTplIdentity(), t.TplName(), t, dst)
-			return err
+			sqls, _, _, err := torm.GetSQL(t.GetTplIdentity(), t.TplName(), t)
+			if err != nil {
+				return err
+			}
+			tenantID, err := sqltenantplug.GetTenantID(ctx)
+			if err != nil {
+				return err
+			}
+			newsql, err := sqltenantplug.WithTenant(sqls, tenantID)
+			if err != nil {
+				return err
+			}
+			err = torm.ExecSQL(ctx, t.GetTplIdentity(), newsql, dst)
+			if err != nil {
+				return err
+			}
+			return nil
 		}
 		
 	`
