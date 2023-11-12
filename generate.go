@@ -160,8 +160,11 @@ func sqlEntityTemplate() (tpl string) {
 		//InitRepository 内置默认仓库实现
 		func InitRepository(dbExecutorGetter tormdb.DBExecutorGetter) (err error) {
 			r, err := GetTormTemplate()
-			tplIdentites:=GetTplIdentities()
-			for _,tplIdentite:=range tplIdentites{
+			if err != nil {
+				return err
+			}
+			tplIdentites := GetTplIdentities()
+			for _, tplIdentite := range tplIdentites {
 				torm.RegisterSQLTpl(tplIdentite, r, dbExecutorGetter)
 			}
 			return nil
