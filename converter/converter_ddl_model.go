@@ -36,6 +36,15 @@ func GenerateModel(tables []*ddlparser.Table) (modelDTOs ModelDTOs, err error) {
 	for i := 0; i < len(tables); i++ {
 		buf := new(bytes.Buffer)
 		table := tables[i]
+
+		columns := make([]*ddlparser.Column, 0)
+		for _, column := range table.Columns {
+			if !table.DatabaseConfig.ExtraConfigs.IsIgnore(ddlparser.ExtraConfig_Domain_model, table.TableName, column.ColumnName) {
+				columns = append(columns, column)
+			}
+
+		}
+		table.Columns = columns
 		err = tl.Execute(buf, table)
 		if err != nil {
 			return
