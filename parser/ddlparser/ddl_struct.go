@@ -30,14 +30,25 @@ const (
 // IsIgnore 生成领域(model,entity) 时,某个域(数据表)的某些字段是否忽略,比如多租户字段,在model中忽略,由专用处理程序处理
 func (ec ExtraConfigs) IsIgnore(domain string, scope string, column string) bool {
 	for _, c := range ec {
-		c.Column = fmt.Sprintf(",%s,", c.Column)
 		condition := strings.EqualFold(c.Action, ExtraConfig_Action_ignore)
 		condition = condition && strings.EqualFold(c.Domain, domain)
-
-		if condition && strings.EqualFold(c.Scope, ExtraConfig_Scope_all) {
+		if !condition {
+			return false
+		}
+		condition = false                       //重新初始化条件
+		columns := strings.Split(c.Column, ",") // 判断传入的列，在配置中
+		for _, col := range columns {
+			if col == column {
+				condition = true
+			}
+		}
+		if !condition {
+			return false
+		}
+		if strings.EqualFold(c.Scope, ExtraConfig_Scope_all) {
 			return true
 		}
-		if condition && strings.Contains(c.Column, fmt.Sprintf(",%s,", column)) {
+		if strings.EqualFold(c.Scope, scope) {
 			return true
 		}
 	}
