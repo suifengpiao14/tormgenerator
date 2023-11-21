@@ -69,9 +69,12 @@ func TestGenerateTorm(t *testing.T) {
 }
 func TestGenerateSQLEntity(t *testing.T) {
 	builder := getBuilder()
-	buf, err := builder.GenerateSQLEntity(getTorm())
+	tormStructs, err := builder.GenerateSQLTorm(getTorm())
 	require.NoError(t, err)
-	fmt.Println(buf.String())
+	b, err := json.Marshal(tormStructs)
+	require.NoError(t, err)
+	s := string(b)
+	fmt.Println(s)
 }
 func TestGenerateDoaSQL(t *testing.T) {
 	builder := getBuilder()

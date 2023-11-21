@@ -38,6 +38,12 @@ var (
 	RightDelim = "}}"
 )
 
+type TormStructs []TormStruct
+
+func (a TormStructs) Len() int           { return len(a) }
+func (a TormStructs) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+func (a TormStructs) Less(i, j int) bool { return a[i].StructName < a[j].StructName }
+
 type TormStruct struct {
 	StructName  string
 	TplIdentity string

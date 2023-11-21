@@ -3,6 +3,7 @@ package tormgenerator
 import (
 	"bytes"
 	"fmt"
+	"sort"
 	"strings"
 	"text/template"
 
@@ -105,7 +106,7 @@ func (b *Builder) GenerateTormFromMeta(tormMetaMap TormMetaMap) (buf *bytes.Buff
 	return &w, nil
 }
 
-func (b *Builder) GenerateSQLEntity(tormText string) (buf *bytes.Buffer, err error) {
+func (b *Builder) GenerateSQLTorm(tormText string) (tormStructs tormparser.TormStructs, err error) {
 	torms, err := tplparser.ParseDefine(tormText)
 	if err != nil {
 		return nil, err
@@ -114,21 +115,12 @@ func (b *Builder) GenerateSQLEntity(tormText string) (buf *bytes.Buffer, err err
 	if err != nil {
 		return nil, err
 	}
-	entityDTO, err := converter.GenerateSQLEntity(torms, talbes)
+	tormStructs, err = converter.GenerateTormStructs(torms, talbes)
 	if err != nil {
 		return nil, err
 	}
-	tplText := sqlEntityTemplate()
-	r, err := template.New("").Parse(tplText)
-	if err != nil {
-		return nil, err
-	}
-	var w bytes.Buffer
-	err = r.Execute(&w, entityDTO)
-	if err != nil {
-		return nil, err
-	}
-	return &w, nil
+	sort.Sort(tormStructs)
+	return tormStructs, nil
 }
 
 func modelTemplate() (tpl string) {
@@ -140,70 +132,6 @@ func modelTemplate() (tpl string) {
 
 		{{range $model:=. }}
 		{{$model.TPL}}
-		{{end}}
-	`
-	return
-}
-
-func sqlEntityTemplate() (tpl string) {
-	tpl = `
-	package repository
-	import (
-		"bytes"
-		"context"
-		"text/template"
-		"github.com/suifengpiao14/torm"
-		"github.com/suifengpiao14/torm/tormdb"
-		"github.com/suifengpiao14/torm/tormfunc"
-		"github.com/suifengpiao14/sqltenantplug"
-		)
-		//InitRepository 内置默认仓库实现
-		func InitRepository(dbExecutorGetter tormdb.DBExecutorGetter) (err error) {
-			r, err := GetTormTemplate()
-			if err != nil {
-				return err
-			}
-			tplIdentites := GetTplIdentities()
-			for _, tplIdentite := range tplIdentites {
-				torm.RegisterSQLTpl(tplIdentite, r, dbExecutorGetter)
-			}
-			return nil
-		}	
-		//GetTormTemplate 获取torm 模板 
-		func GetTormTemplate()(tormTemplate *template.Template,err error){
-			torm:=GetTorm()
-			tormTemplate,err= template.New("").Funcs(tormfunc.TormfuncMapSQL).Parse(torm)
-			if err != nil {
-				return nil,err 
-			}
-			return tormTemplate,nil
-		}
-		func GetTplIdentities() (tplIdentities []string) {
-			m := make(map[string]struct{}, 0)
-			tplIdentities = make([]string, 0)
-			tplIdentity := ""
-			{{- range $entity:=. }}
-			tplIdentity = new({{$entity.Name}}).GetTplIdentity()
-			m[tplIdentity] = struct{}{}
-			{{- end}}
-			for tplNamespace := range m {
-				tplIdentities = append(tplIdentities, tplNamespace)
-			}
-			return tplIdentities
-		}
-
-		//获取所有torm
-		func GetTorm()(torm string){
-			var w bytes.Buffer
-			{{- range $entity:=. }}
-			w.WriteString(new({{$entity.Name}}).Torm())
-			{{- end}}
-			torm=w.String()
-			return torm
-		}
-
-		{{range $entity:=. }}
-		{{$entity.TPL}}
 		{{end}}
 	`
 	return
