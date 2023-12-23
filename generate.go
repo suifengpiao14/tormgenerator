@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"sort"
 	"strings"
-	"text/template"
 
 	"github.com/suifengpiao14/funcs"
 	"github.com/suifengpiao14/tormgenerator/converter"
@@ -51,7 +50,7 @@ func (b *Builder) MakeTormMetaWithAllTable(commonTormMeta string) (tormMetaMap *
 	return tormMetaMap, err
 }
 
-func (b *Builder) GenerateModel() (buf *bytes.Buffer, err error) {
+func (b *Builder) GenerateModel() (models converter.ModelDTOs, err error) {
 	talbes, err := ddlparser.ParseDDL(b.ddl, b.dbConfig)
 	if err != nil {
 		return nil, err
@@ -66,17 +65,7 @@ func (b *Builder) GenerateModel() (buf *bytes.Buffer, err error) {
 	if err != nil {
 		return nil, err
 	}
-
-	var w bytes.Buffer
-	r, err := template.New("").Parse(modelTemplate())
-	if err != nil {
-		return nil, err
-	}
-	err = r.Execute(&w, modelDTOs)
-	if err != nil {
-		return nil, err
-	}
-	return &w, nil
+	return modelDTOs, nil
 }
 
 func (b *Builder) GenerateTormFromMeta(tormMetaMap TormMetaMap) (buf *bytes.Buffer, err error) {
@@ -121,18 +110,4 @@ func (b *Builder) GenerateSQLTorm(tormText string) (tormStructs tormparser.TormS
 	}
 	sort.Sort(tormStructs)
 	return tormStructs, nil
-}
-
-func modelTemplate() (tpl string) {
-	tpl = `
-	package repository
-	import (
-			"github.com/suifengpiao14/torm/tormfunc"
-		)
-
-		{{range $model:=. }}
-		{{$model.TPL}}
-		{{end}}
-	`
-	return
 }

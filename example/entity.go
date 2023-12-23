@@ -1,11 +1,11 @@
 package example
 
-import "github.com/suifengpiao14/torm/tormfunc"
+import "github.com/suifengpiao14/torm"
 
 type ServiceGetByServiceIDEntity struct {
 	ServiceID string //服务标识
 
-	tormfunc.VolumeMap
+	torm.VolumeMap
 }
 
 func (t *ServiceGetByServiceIDEntity) TplName() string {
@@ -19,7 +19,7 @@ func (t *ServiceGetByServiceIDEntity) TplType() string {
 type ServiceGetAllByServiceIDListEntity struct {
 	ServiceIDList []string //
 
-	tormfunc.VolumeMap
+	torm.VolumeMap
 }
 
 func (t *ServiceGetAllByServiceIDListEntity) TplName() string {
@@ -31,7 +31,7 @@ func (t *ServiceGetAllByServiceIDListEntity) TplType() string {
 }
 
 type ServicePaginateWhereEntity struct {
-	tormfunc.VolumeMap
+	torm.VolumeMap
 }
 
 func (t *ServicePaginateWhereEntity) TplName() string {
@@ -45,7 +45,7 @@ func (t *ServicePaginateWhereEntity) TplType() string {
 type ServicePaginateTotalEntity struct {
 	ServicePaginateWhereEntity //
 
-	tormfunc.VolumeMap
+	torm.VolumeMap
 }
 
 func (t *ServicePaginateTotalEntity) TplName() string {
@@ -63,7 +63,7 @@ type ServicePaginateEntity struct {
 
 	ServicePaginateWhereEntity //
 
-	tormfunc.VolumeMap
+	torm.VolumeMap
 }
 
 func (t *ServicePaginateEntity) TplName() string {
@@ -93,7 +93,7 @@ type ServiceInsertEntity struct {
 
 	Version string //版本
 
-	tormfunc.VolumeMap
+	torm.VolumeMap
 }
 
 func (t *ServiceInsertEntity) TplName() string {
@@ -123,7 +123,7 @@ type ServiceUpdateEntity struct {
 
 	Version string //版本
 
-	tormfunc.VolumeMap
+	torm.VolumeMap
 }
 
 func (t *ServiceUpdateEntity) TplName() string {
@@ -137,7 +137,7 @@ func (t *ServiceUpdateEntity) TplType() string {
 type ServiceDelEntity struct {
 	ServiceID string //服务标识
 
-	tormfunc.VolumeMap
+	torm.VolumeMap
 }
 
 func (t *ServiceDelEntity) TplName() string {
@@ -151,7 +151,7 @@ func (t *ServiceDelEntity) TplType() string {
 type APIGetByAPIIDEntity struct {
 	APIID string //api 文档标识
 
-	tormfunc.VolumeMap
+	torm.VolumeMap
 }
 
 func (t *APIGetByAPIIDEntity) TplName() string {
@@ -165,7 +165,7 @@ func (t *APIGetByAPIIDEntity) TplType() string {
 type APIGetAllByAPIIDListEntity struct {
 	APIIDList []string //
 
-	tormfunc.VolumeMap
+	torm.VolumeMap
 }
 
 func (t *APIGetAllByAPIIDListEntity) TplName() string {
@@ -177,7 +177,7 @@ func (t *APIGetAllByAPIIDListEntity) TplType() string {
 }
 
 type APIPaginateWhereEntity struct {
-	tormfunc.VolumeMap
+	torm.VolumeMap
 }
 
 func (t *APIPaginateWhereEntity) TplName() string {
@@ -191,7 +191,7 @@ func (t *APIPaginateWhereEntity) TplType() string {
 type APIPaginateTotalEntity struct {
 	APIPaginateWhereEntity //
 
-	tormfunc.VolumeMap
+	torm.VolumeMap
 }
 
 func (t *APIPaginateTotalEntity) TplName() string {
@@ -209,7 +209,7 @@ type APIPaginateEntity struct {
 
 	Offset int //
 
-	tormfunc.VolumeMap
+	torm.VolumeMap
 }
 
 func (t *APIPaginateEntity) TplName() string {
@@ -237,7 +237,7 @@ type APIInsertEntity struct {
 
 	URI string //路径
 
-	tormfunc.VolumeMap
+	torm.VolumeMap
 }
 
 func (t *APIInsertEntity) TplName() string {
@@ -265,7 +265,7 @@ type APIUpdateEntity struct {
 
 	URI string //路径
 
-	tormfunc.VolumeMap
+	torm.VolumeMap
 }
 
 func (t *APIUpdateEntity) TplName() string {
@@ -279,7 +279,7 @@ func (t *APIUpdateEntity) TplType() string {
 type APIDelEntity struct {
 	APIID string //api 文档标识
 
-	tormfunc.VolumeMap
+	torm.VolumeMap
 }
 
 func (t *APIDelEntity) TplName() string {
@@ -293,7 +293,7 @@ func (t *APIDelEntity) TplType() string {
 type ParameterGetByParameterIDEntity struct {
 	ParameterID string //参数标识
 
-	tormfunc.VolumeMap
+	torm.VolumeMap
 }
 
 func (t *ParameterGetByParameterIDEntity) TplName() string {
@@ -307,7 +307,7 @@ func (t *ParameterGetByParameterIDEntity) TplType() string {
 type ParameterGetAllByParameterIDListEntity struct {
 	ParameterIDList []string //
 
-	tormfunc.VolumeMap
+	torm.VolumeMap
 }
 
 func (t *ParameterGetAllByParameterIDListEntity) TplName() string {
@@ -319,7 +319,7 @@ func (t *ParameterGetAllByParameterIDListEntity) TplType() string {
 }
 
 type ParameterPaginateWhereEntity struct {
-	tormfunc.VolumeMap
+	torm.VolumeMap
 }
 
 func (t *ParameterPaginateWhereEntity) TplName() string {
@@ -333,7 +333,7 @@ func (t *ParameterPaginateWhereEntity) TplType() string {
 type ParameterPaginateTotalEntity struct {
 	ParameterPaginateWhereEntity //
 
-	tormfunc.VolumeMap
+	torm.VolumeMap
 }
 
 func (t *ParameterPaginateTotalEntity) TplName() string {
@@ -351,7 +351,7 @@ type ParameterPaginateEntity struct {
 
 	ParameterPaginateWhereEntity //
 
-	tormfunc.VolumeMap
+	torm.VolumeMap
 }
 
 func (t *ParameterPaginateEntity) TplName() string {
@@ -403,7 +403,7 @@ type ParameterInsertEntity struct {
 
 	ValidateSchemaID string //验证规则标识
 
-	tormfunc.VolumeMap
+	torm.VolumeMap
 }
 
 func (t *ParameterInsertEntity) TplName() string {
@@ -455,7 +455,7 @@ type ParameterUpdateEntity struct {
 
 	ValidateSchemaID string //验证规则标识
 
-	tormfunc.VolumeMap
+	torm.VolumeMap
 }
 
 func (t *ParameterUpdateEntity) TplName() string {
@@ -469,7 +469,7 @@ func (t *ParameterUpdateEntity) TplType() string {
 type ParameterDelEntity struct {
 	ParameterID string //参数标识
 
-	tormfunc.VolumeMap
+	torm.VolumeMap
 }
 
 func (t *ParameterDelEntity) TplName() string {
@@ -483,7 +483,7 @@ func (t *ParameterDelEntity) TplType() string {
 type ValidateSchemaGetByValidateSchemaIDEntity struct {
 	ValidateSchemaID string //验证规则标识
 
-	tormfunc.VolumeMap
+	torm.VolumeMap
 }
 
 func (t *ValidateSchemaGetByValidateSchemaIDEntity) TplName() string {
@@ -497,7 +497,7 @@ func (t *ValidateSchemaGetByValidateSchemaIDEntity) TplType() string {
 type ValidateSchemaGetAllByValidateSchemaIDListEntity struct {
 	ValidateSchemaIDList []string //
 
-	tormfunc.VolumeMap
+	torm.VolumeMap
 }
 
 func (t *ValidateSchemaGetAllByValidateSchemaIDListEntity) TplName() string {
@@ -509,7 +509,7 @@ func (t *ValidateSchemaGetAllByValidateSchemaIDListEntity) TplType() string {
 }
 
 type ValidateSchemaPaginateWhereEntity struct {
-	tormfunc.VolumeMap
+	torm.VolumeMap
 }
 
 func (t *ValidateSchemaPaginateWhereEntity) TplName() string {
@@ -523,7 +523,7 @@ func (t *ValidateSchemaPaginateWhereEntity) TplType() string {
 type ValidateSchemaPaginateTotalEntity struct {
 	ValidateSchemaPaginateWhereEntity //
 
-	tormfunc.VolumeMap
+	torm.VolumeMap
 }
 
 func (t *ValidateSchemaPaginateTotalEntity) TplName() string {
@@ -541,7 +541,7 @@ type ValidateSchemaPaginateEntity struct {
 
 	ValidateSchemaPaginateWhereEntity //
 
-	tormfunc.VolumeMap
+	torm.VolumeMap
 }
 
 func (t *ValidateSchemaPaginateEntity) TplName() string {
@@ -637,7 +637,7 @@ type ValidateSchemaInsertEntity struct {
 
 	XML string //xml对象
 
-	tormfunc.VolumeMap
+	torm.VolumeMap
 }
 
 func (t *ValidateSchemaInsertEntity) TplName() string {
@@ -733,7 +733,7 @@ type ValidateSchemaUpdateEntity struct {
 
 	XML string //xml对象
 
-	tormfunc.VolumeMap
+	torm.VolumeMap
 }
 
 func (t *ValidateSchemaUpdateEntity) TplName() string {
@@ -747,7 +747,7 @@ func (t *ValidateSchemaUpdateEntity) TplType() string {
 type ValidateSchemaDelEntity struct {
 	ValidateSchemaID string //验证规则标识
 
-	tormfunc.VolumeMap
+	torm.VolumeMap
 }
 
 func (t *ValidateSchemaDelEntity) TplName() string {
@@ -761,7 +761,7 @@ func (t *ValidateSchemaDelEntity) TplType() string {
 type ExampleGetByExampleIDEntity struct {
 	ExampleID string //测试用例标识
 
-	tormfunc.VolumeMap
+	torm.VolumeMap
 }
 
 func (t *ExampleGetByExampleIDEntity) TplName() string {
@@ -775,7 +775,7 @@ func (t *ExampleGetByExampleIDEntity) TplType() string {
 type ExampleGetAllByExampleIDListEntity struct {
 	ExampleIDList []string //
 
-	tormfunc.VolumeMap
+	torm.VolumeMap
 }
 
 func (t *ExampleGetAllByExampleIDListEntity) TplName() string {
@@ -787,7 +787,7 @@ func (t *ExampleGetAllByExampleIDListEntity) TplType() string {
 }
 
 type ExamplePaginateWhereEntity struct {
-	tormfunc.VolumeMap
+	torm.VolumeMap
 }
 
 func (t *ExamplePaginateWhereEntity) TplName() string {
@@ -801,7 +801,7 @@ func (t *ExamplePaginateWhereEntity) TplType() string {
 type ExamplePaginateTotalEntity struct {
 	ExamplePaginateWhereEntity //
 
-	tormfunc.VolumeMap
+	torm.VolumeMap
 }
 
 func (t *ExamplePaginateTotalEntity) TplName() string {
@@ -819,7 +819,7 @@ type ExamplePaginateEntity struct {
 
 	Offset int //
 
-	tormfunc.VolumeMap
+	torm.VolumeMap
 }
 
 func (t *ExamplePaginateEntity) TplName() string {
@@ -847,7 +847,7 @@ type ExampleInsertEntity struct {
 
 	Title string //名称(冗余local.zh)
 
-	tormfunc.VolumeMap
+	torm.VolumeMap
 }
 
 func (t *ExampleInsertEntity) TplName() string {
@@ -875,7 +875,7 @@ type ExampleUpdateEntity struct {
 
 	Title string //名称(冗余local.zh)
 
-	tormfunc.VolumeMap
+	torm.VolumeMap
 }
 
 func (t *ExampleUpdateEntity) TplName() string {
@@ -889,7 +889,7 @@ func (t *ExampleUpdateEntity) TplType() string {
 type ExampleDelEntity struct {
 	ExampleID string //测试用例标识
 
-	tormfunc.VolumeMap
+	torm.VolumeMap
 }
 
 func (t *ExampleDelEntity) TplName() string {
@@ -903,7 +903,7 @@ func (t *ExampleDelEntity) TplType() string {
 type MarkdownGetByMarkdownIDEntity struct {
 	MarkdownID string //markdown 文档标识
 
-	tormfunc.VolumeMap
+	torm.VolumeMap
 }
 
 func (t *MarkdownGetByMarkdownIDEntity) TplName() string {
@@ -917,7 +917,7 @@ func (t *MarkdownGetByMarkdownIDEntity) TplType() string {
 type MarkdownGetAllByMarkdownIDListEntity struct {
 	MarkdownIDList []string //
 
-	tormfunc.VolumeMap
+	torm.VolumeMap
 }
 
 func (t *MarkdownGetAllByMarkdownIDListEntity) TplName() string {
@@ -929,7 +929,7 @@ func (t *MarkdownGetAllByMarkdownIDListEntity) TplType() string {
 }
 
 type MarkdownPaginateWhereEntity struct {
-	tormfunc.VolumeMap
+	torm.VolumeMap
 }
 
 func (t *MarkdownPaginateWhereEntity) TplName() string {
@@ -943,7 +943,7 @@ func (t *MarkdownPaginateWhereEntity) TplType() string {
 type MarkdownPaginateTotalEntity struct {
 	MarkdownPaginateWhereEntity //
 
-	tormfunc.VolumeMap
+	torm.VolumeMap
 }
 
 func (t *MarkdownPaginateTotalEntity) TplName() string {
@@ -961,7 +961,7 @@ type MarkdownPaginateEntity struct {
 
 	Offset int //
 
-	tormfunc.VolumeMap
+	torm.VolumeMap
 }
 
 func (t *MarkdownPaginateEntity) TplName() string {
@@ -991,7 +991,7 @@ type MarkdownInsertEntity struct {
 
 	Title string //名称(冗余local.zh)
 
-	tormfunc.VolumeMap
+	torm.VolumeMap
 }
 
 func (t *MarkdownInsertEntity) TplName() string {
@@ -1021,7 +1021,7 @@ type MarkdownUpdateEntity struct {
 
 	Title string //名称(冗余local.zh)
 
-	tormfunc.VolumeMap
+	torm.VolumeMap
 }
 
 func (t *MarkdownUpdateEntity) TplName() string {
@@ -1035,7 +1035,7 @@ func (t *MarkdownUpdateEntity) TplType() string {
 type MarkdownDelEntity struct {
 	MarkdownID string //markdown 文档标识
 
-	tormfunc.VolumeMap
+	torm.VolumeMap
 }
 
 func (t *MarkdownDelEntity) TplName() string {
@@ -1049,7 +1049,7 @@ func (t *MarkdownDelEntity) TplType() string {
 type ServerGetByServerIDEntity struct {
 	ServerID string //服务标识
 
-	tormfunc.VolumeMap
+	torm.VolumeMap
 }
 
 func (t *ServerGetByServerIDEntity) TplName() string {
@@ -1063,7 +1063,7 @@ func (t *ServerGetByServerIDEntity) TplType() string {
 type ServerGetAllByServerIDListEntity struct {
 	ServerIDList []string //
 
-	tormfunc.VolumeMap
+	torm.VolumeMap
 }
 
 func (t *ServerGetAllByServerIDListEntity) TplName() string {
@@ -1075,7 +1075,7 @@ func (t *ServerGetAllByServerIDListEntity) TplType() string {
 }
 
 type ServerPaginateWhereEntity struct {
-	tormfunc.VolumeMap
+	torm.VolumeMap
 }
 
 func (t *ServerPaginateWhereEntity) TplName() string {
@@ -1089,7 +1089,7 @@ func (t *ServerPaginateWhereEntity) TplType() string {
 type ServerPaginateTotalEntity struct {
 	ServerPaginateWhereEntity //
 
-	tormfunc.VolumeMap
+	torm.VolumeMap
 }
 
 func (t *ServerPaginateTotalEntity) TplName() string {
@@ -1107,7 +1107,7 @@ type ServerPaginateEntity struct {
 
 	ServerPaginateWhereEntity //
 
-	tormfunc.VolumeMap
+	torm.VolumeMap
 }
 
 func (t *ServerPaginateEntity) TplName() string {
@@ -1131,7 +1131,7 @@ type ServerInsertEntity struct {
 
 	URL string //服务器地址
 
-	tormfunc.VolumeMap
+	torm.VolumeMap
 }
 
 func (t *ServerInsertEntity) TplName() string {
@@ -1155,7 +1155,7 @@ type ServerUpdateEntity struct {
 
 	URL string //服务器地址
 
-	tormfunc.VolumeMap
+	torm.VolumeMap
 }
 
 func (t *ServerUpdateEntity) TplName() string {
@@ -1169,7 +1169,7 @@ func (t *ServerUpdateEntity) TplType() string {
 type ServerDelEntity struct {
 	ServerID string //服务标识
 
-	tormfunc.VolumeMap
+	torm.VolumeMap
 }
 
 func (t *ServerDelEntity) TplName() string {

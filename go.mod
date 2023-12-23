@@ -1,14 +1,14 @@
 module github.com/suifengpiao14/tormgenerator
 
-go 1.18
+go 1.21.0
 
 require (
 	github.com/bytewatch/ddl-executor v0.0.0-20191006051259-3983fa694bf8
 	github.com/pkg/errors v0.9.1
-	github.com/stretchr/testify v1.8.1
-	github.com/suifengpiao14/funcs v0.0.3
+	github.com/stretchr/testify v1.8.4
+	github.com/suifengpiao14/funcs v0.0.16
 	github.com/suifengpiao14/jsonschemaline v0.0.44
-	github.com/suifengpiao14/torm v0.0.12
+	github.com/suifengpiao14/torm v0.0.23
 )
 
 require (
@@ -18,33 +18,41 @@ require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/evanphx/json-patch/v5 v5.6.0 // indirect
 	github.com/go-ole/go-ole v1.2.1 // indirect
+	github.com/go-playground/locales v0.14.1 // indirect
+	github.com/go-playground/universal-translator v0.18.1 // indirect
+	github.com/go-playground/validator v9.31.0+incompatible // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
-	github.com/konsorten/go-windows-terminal-sequences v1.0.1 // indirect
+	github.com/gopherjs/gopherjs v1.17.2 // indirect
+	github.com/jmoiron/sqlx v1.3.5 // indirect
+	github.com/jtolds/gls v4.20.0+incompatible // indirect
+	github.com/leodido/go-urn v1.2.4 // indirect
 	github.com/pingcap/errors v0.11.0 // indirect
 	github.com/pingcap/parser v0.0.0-20190123063514-f8c3dff115d5 // indirect
 	github.com/pingcap/tidb v0.0.0-20190108123336-c68ee7318319 // indirect
 	github.com/pingcap/tipb v0.0.0-20190107072121-abbec73437b7 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/remyoudompheng/bigfft v0.0.0-20170806203942-52369c62f446 // indirect
-	github.com/rs/xid v1.4.0 // indirect
+	github.com/rs/xid v1.5.0 // indirect
 	github.com/shirou/gopsutil v2.18.10+incompatible // indirect
-	github.com/sirupsen/logrus v1.3.0 // indirect
+	github.com/sirupsen/logrus v1.8.1 // indirect
+	github.com/smarty/assertions v1.15.1 // indirect
 	github.com/spf13/cast v1.5.1 // indirect
 	github.com/suifengpiao14/gjsonmodifier v0.1.9 // indirect
 	github.com/suifengpiao14/kvstruct v0.0.14 // indirect
-	github.com/suifengpiao14/logchan/v2 v2.0.14 // indirect
+	github.com/suifengpiao14/logchan/v2 v2.0.22 // indirect
 	github.com/tidwall/gjson v1.14.4 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.1 // indirect
 	github.com/tidwall/sjson v1.2.5 // indirect
-	golang.org/x/crypto v0.8.0 // indirect
+	golang.org/x/net v0.9.0 // indirect
 	golang.org/x/sys v0.7.0 // indirect
-	golang.org/x/term v0.7.0 // indirect
-	golang.org/x/text v0.9.0 // indirect
+	golang.org/x/text v0.14.0 // indirect
 	google.golang.org/genproto v0.0.0-20220803205849-8f55acc8769f // indirect
 	google.golang.org/grpc v1.49.0 // indirect
 	google.golang.org/protobuf v1.29.1 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
+	gorm.io/gorm v1.25.5 // indirect
+	moul.io/http2curl v1.0.0 // indirect
 )
 
 replace github.com/bytewatch/ddl-executor => github.com/suifengpiao14/ddl-executor v0.0.0-20220524105604-31a4142e615e

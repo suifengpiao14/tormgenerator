@@ -54,9 +54,9 @@ func getTorm() (tormMetaTpl string) {
 
 func TestGenerateModel(t *testing.T) {
 	builder := getBuilder()
-	buf, err := builder.GenerateModel()
+	models, err := builder.GenerateModel()
 	require.NoError(t, err)
-	fmt.Println(buf.String())
+	fmt.Println(models)
 }
 func TestGenerateTorm(t *testing.T) {
 	builder := getBuilder()
