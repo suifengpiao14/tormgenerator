@@ -7,6 +7,7 @@ import (
 	"text/template"
 
 	"github.com/suifengpiao14/funcs"
+	"github.com/suifengpiao14/torm"
 	"github.com/suifengpiao14/tormgenerator/parser/ddlparser"
 )
 

@@ -85,8 +85,8 @@ func (b *Builder) GenerateTormFromMeta(tormMetaMap TormMetaMap) (buf *bytes.Buff
 				if err != nil {
 					return nil, err
 				}
-				for _, torm := range tormDTOs {
-					w.WriteString(torm.TPL)
+				for _, tormDTO := range tormDTOs {
+					w.WriteString(tormDTO.TPL)
 					w.WriteString(tormparser.EOF)
 				}
 			}

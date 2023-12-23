@@ -322,7 +322,7 @@ func (dl TPLDefines) UniqueItems() (uniq TPLDefines) {
 	}
 	return
 }
-func (dl TPLDefines) String() (torm string) {
+func (dl TPLDefines) String() (tormStr string) {
 	uniq := dl.UniqueItems()
 	var w bytes.Buffer
 	for _, define := range uniq {
@@ -330,8 +330,8 @@ func (dl TPLDefines) String() (torm string) {
 		w.WriteString(EOF)
 	}
 	w.WriteString(EOF)
-	torm = w.String()
-	return torm
+	tormStr = w.String()
+	return tormStr
 }
 
 func (dl *TPLDefines) SetPriority(priority int) {
