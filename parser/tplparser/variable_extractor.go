@@ -9,10 +9,13 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/suifengpiao14/funcs"
-	"github.com/suifengpiao14/jsonschemaline"
 )
 
 const STRUCT_DEFINE_NANE_FORMAT = "%sEntity"
+const (
+	LINE_SCHEMA_DIRECTION_IN  = "in"
+	LINE_SCHEMA_DIRECTION_OUT = "out"
+)
 
 type Variable struct {
 	Name       string // 模板中的原始名称
@@ -55,9 +58,9 @@ func (v Variables) UniqueItems() (uniq []*Variable) {
 
 func (variables Variables) Lineschema(id string, direction string) (lineschema string, err error) {
 	arr := make([]string, 0)
-	if direction == jsonschemaline.LINE_SCHEMA_DIRECTION_IN {
+	if direction == LINE_SCHEMA_DIRECTION_IN {
 		arr = append(arr, fmt.Sprintf("version=http://json-schema.org/draft-07/schema,id=input,direction=%s", direction))
-	} else if direction == jsonschemaline.LINE_SCHEMA_DIRECTION_OUT {
+	} else if direction == LINE_SCHEMA_DIRECTION_OUT {
 		arr = append(arr, fmt.Sprintf("version=http://json-schema.org/draft-07/schema,id=output,direction=%s", direction))
 	}
 	for _, v := range variables {
@@ -70,9 +73,9 @@ func (variables Variables) Lineschema(id string, direction string) (lineschema s
 		dst := ""
 		src := ""
 		format := v.Type
-		if direction == jsonschemaline.LINE_SCHEMA_DIRECTION_IN {
+		if direction == LINE_SCHEMA_DIRECTION_IN {
 			dst = v.Name //此处使用驼峰,v.FieldName 被改成蛇型了
-		} else if direction == jsonschemaline.LINE_SCHEMA_DIRECTION_OUT {
+		} else if direction == LINE_SCHEMA_DIRECTION_OUT {
 			src = v.Name
 		}
 

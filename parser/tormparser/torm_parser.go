@@ -9,7 +9,6 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/suifengpiao14/funcs"
-	"github.com/suifengpiao14/jsonschemaline"
 	"github.com/suifengpiao14/tormgenerator/parser/ddlparser"
 	"github.com/suifengpiao14/tormgenerator/parser/tplparser"
 )
@@ -58,7 +57,7 @@ type TormStruct struct {
 // GetLineschema 获取输入输出schema
 func (t TormStruct) GetLineschema() (inschema string, outschema string, err error) {
 	inVariables := t.Variables
-	inschema, err = inVariables.Lineschema(fmt.Sprintf("%sIn", t.Name), jsonschemaline.LINE_SCHEMA_DIRECTION_IN)
+	inschema, err = inVariables.Lineschema(fmt.Sprintf("%sIn", t.Name), tplparser.LINE_SCHEMA_DIRECTION_IN)
 	if err != nil {
 		return "", "", err
 	}
@@ -66,7 +65,7 @@ func (t TormStruct) GetLineschema() (inschema string, outschema string, err erro
 	if t.OutEntity != nil {
 		outVariables = t.OutEntity.Variables
 	}
-	outschema, err = outVariables.Lineschema(fmt.Sprintf("%sOut", t.Name), jsonschemaline.LINE_SCHEMA_DIRECTION_OUT)
+	outschema, err = outVariables.Lineschema(fmt.Sprintf("%sOut", t.Name), tplparser.LINE_SCHEMA_DIRECTION_OUT)
 	if err != nil {
 		return "", "", err
 	}
