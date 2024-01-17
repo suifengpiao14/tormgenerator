@@ -294,13 +294,14 @@ func (t *Table) DeletedAtColumn() (deletedAtColumn *Column) {
 	return
 }
 
-func enumsConst(tablePrefix string, columnPt *Column) (enumsConsts _Enums) {
+func enumsConst(tablePrefix string, columnPt *Column) (enumsConsts _Enums, err error) {
 	prefix := fmt.Sprintf("%s_%s", tablePrefix, columnPt.Name)
 	enumsConsts = _Enums{}
 	comment := strings.ReplaceAll(columnPt.Comment, " ", ",") // 替换中文逗号(兼容空格和逗号另种分割符号)
 	reg, err := regexp.Compile(`\W`)
 	if err != nil {
-		panic(err)
+		err = errors.WithMessage(err, "ddlparser.enumsConst")
+		return nil, err
 	}
 	for _, constValue := range columnPt.Enums {
 		constKey := fmt.Sprintf("%s_%s", prefix, constValue)
@@ -308,7 +309,7 @@ func enumsConst(tablePrefix string, columnPt *Column) (enumsConsts _Enums) {
 		index := strings.Index(comment, valueFormat)
 		if index < 0 {
 			err := errors.Errorf("column %s(enum) comment except contains %s-xxx,got:%s", columnPt.Name, constValue, comment)
-			panic(err)
+			return nil, err
 		}
 		title := comment[index+len(valueFormat):]
 		comIndex := strings.Index(title, ",")

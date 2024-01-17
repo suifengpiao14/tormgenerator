@@ -78,7 +78,10 @@ func ParseDDL(ddl string, dbConfig DatabaseConfig) (tables []*Table, err error) 
 				OnUpdate:      columnDef.OnUpdate,
 			}
 			if len(columnPt.Enums) > 0 {
-				subEnumConst := enumsConst(table.TableNameTrimPrefix(), columnPt)
+				subEnumConst, err := enumsConst(table.TableNameTrimPrefix(), columnPt)
+				if err != nil {
+					return nil, err
+				}
 				table.EnumsConst = append(table.EnumsConst, subEnumConst...)
 			}
 			columnPt.OnCreate = columnPt.IsDefaultValueCurrentTimestamp() && !columnPt.OnUpdate    // 自动填充时间，但是更新时不变，认为是创建时间列
@@ -90,5 +93,5 @@ func ParseDDL(ddl string, dbConfig DatabaseConfig) (tables []*Table, err error) 
 		}
 		tables = append(tables, table)
 	}
-	return
+	return tables, nil
 }
