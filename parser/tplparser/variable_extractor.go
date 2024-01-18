@@ -323,8 +323,12 @@ func IsNameChar(c byte) (yes bool) {
 	z := byte('z')
 	A := byte('A')
 	Z := byte('Z')
+	zero := byte(0)
+	nine := byte(9)
+	zeroStr := byte('0')
+	nineStr := byte('9')
 	underline := byte('_')
-	if (a <= c && c <= z) || (A <= c && c <= Z) || c == underline {
+	if (a <= c && c <= z) || (A <= c && c <= Z) || c == underline || (zero <= c && c <= nine) || (zeroStr <= c && c <= nineStr) {
 		yes = true
 	}
 	return
