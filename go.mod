@@ -4,7 +4,6 @@ go 1.21.0
 
 require (
 	github.com/bytewatch/ddl-executor v0.0.0-20191006051259-3983fa694bf8
-	github.com/pingcap/parser v0.0.0-20190123063514-f8c3dff115d5
 	github.com/pkg/errors v0.9.1
 	github.com/stretchr/testify v1.8.4
 	github.com/suifengpiao14/dml v0.0.16
@@ -27,6 +26,7 @@ require (
 	github.com/leodido/go-urn v1.2.4 // indirect
 	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
 	github.com/pingcap/errors v0.11.0 // indirect
+	github.com/pingcap/parser v0.0.0-20190123063514-f8c3dff115d5 // indirect
 	github.com/pingcap/tidb v0.0.0-20190108123336-c68ee7318319 // indirect
 	github.com/pingcap/tipb v0.0.0-20190107072121-abbec73437b7 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
