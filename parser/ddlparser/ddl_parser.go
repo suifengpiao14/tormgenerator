@@ -1,25 +1,22 @@
 package ddlparser
 
 import (
-	"fmt"
 	"sort"
 	"strings"
 
-	executor "github.com/bytewatch/ddl-executor"
+	parserDDL "github.com/suifengpiao14/dml/encoding/sql"
 	"github.com/suifengpiao14/funcs"
 )
 
 // ParseDDL 解析sql ddl
 func ParseDDL(ddl string, dbConfig DatabaseConfig) (tables []*Table, err error) {
 	tables = make([]*Table, 0)
-	conf := executor.NewDefaultConfig()
-	inst := executor.NewExecutor(conf)
+
 	databaseName := "test"
 	if dbConfig.DatabaseName != "" {
 		databaseName = dbConfig.DatabaseName
 	}
-	ddl = fmt.Sprintf("create database `%s`;use `%s`;%s", databaseName, databaseName, ddl)
-	err = inst.Exec(ddl)
+	inst, err := parserDDL.TryExecDDLs(ddl)
 	if err != nil {
 		return nil, err
 	}
