@@ -79,6 +79,7 @@ func ParserTorm(sqltplDefineText *tplparser.TPLDefine, tableList []*ddlparser.Ta
 	variableList := sqltplDefineText.GetVariables()
 	variableList, err = formatVariableTypeByTableColumn(variableList, tableList)
 	if err != nil {
+		err = errors.WithMessage(err, sqltplDefineText.Text)
 		return nil, err
 	}
 	columnArr := parseSQLSelectColumn(sqltplDefineText.Text)
