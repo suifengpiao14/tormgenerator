@@ -6,7 +6,7 @@ require (
 	github.com/bytewatch/ddl-executor v0.0.0-20191006051259-3983fa694bf8
 	github.com/pkg/errors v0.9.1
 	github.com/stretchr/testify v1.8.4
-	github.com/suifengpiao14/dml v0.0.16
+	github.com/suifengpiao14/dml v0.0.67
 	github.com/suifengpiao14/funcs v0.0.17
 	github.com/suifengpiao14/torm v0.0.23
 )
@@ -33,12 +33,11 @@ require (
 	github.com/remyoudompheng/bigfft v0.0.0-20170806203942-52369c62f446 // indirect
 	github.com/rs/xid v1.5.0 // indirect
 	github.com/shirou/gopsutil v2.18.10+incompatible // indirect
-	github.com/sirupsen/logrus v1.8.1 // indirect
+	github.com/sirupsen/logrus v1.9.0 // indirect
 	github.com/smarty/assertions v1.15.1 // indirect
 	github.com/spf13/cast v1.5.1 // indirect
 	github.com/suifengpiao14/logchan/v2 v2.0.22 // indirect
-	golang.org/x/net v0.9.0 // indirect
-	golang.org/x/sys v0.7.0 // indirect
+	golang.org/x/sys v0.10.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 	google.golang.org/genproto v0.0.0-20220803205849-8f55acc8769f // indirect
 	google.golang.org/grpc v1.49.0 // indirect
