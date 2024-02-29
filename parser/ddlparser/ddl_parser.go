@@ -4,8 +4,8 @@ import (
 	"sort"
 	"strings"
 
-	parserDDL "github.com/suifengpiao14/dml/encoding/sql"
 	"github.com/suifengpiao14/funcs"
+	parserDDL "github.com/suifengpiao14/sqlexec/sqlexecparser"
 )
 
 // ParseDDL 解析sql ddl
