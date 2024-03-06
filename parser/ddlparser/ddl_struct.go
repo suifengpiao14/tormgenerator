@@ -8,7 +8,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/suifengpiao14/funcs"
 
-	executor "github.com/bytewatch/ddl-executor"
+	executor "github.com/suifengpiao14/ddl-executor"
 )
 
 // {"domain":"model","scope":"all","action":"ignore","column":"owner_id"}
