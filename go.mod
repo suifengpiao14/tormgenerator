@@ -7,8 +7,8 @@ require (
 	github.com/stretchr/testify v1.9.0
 	github.com/suifengpiao14/ddl-executor v0.0.4
 	github.com/suifengpiao14/funcs v0.0.18
-	github.com/suifengpiao14/sqlexec v0.0.28
-	github.com/suifengpiao14/torm v0.0.29
+	github.com/suifengpiao14/sqlexec v0.0.29
+	github.com/suifengpiao14/torm v0.0.30
 )
 
 require (
